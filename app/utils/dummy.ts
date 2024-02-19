@@ -187,6 +187,7 @@ export type BlogType = {
   url: string;
   likes: number;
   comments: number;
+  slug?: string;
 };
 
 export const myBlogs: BlogType[] = [
@@ -198,6 +199,7 @@ export const myBlogs: BlogType[] = [
     url: 'https://www.google.com',
     likes: 100,
     comments: 50,
+    slug: 'how-to-use-the-latest-version-of-xcode',
   },
   {
     image: portfolio_2,
@@ -207,6 +209,7 @@ export const myBlogs: BlogType[] = [
     url: 'https://www.google.com',
     likes: 100,
     comments: 50,
+    slug: 'how-to-use-the-latest-version-of-xcode-1',
   },
   {
     image: portfolio_1,
@@ -216,5 +219,6 @@ export const myBlogs: BlogType[] = [
     url: 'https://www.google.com',
     likes: 100,
     comments: 50,
+    slug: 'how-to-use-the-latest-version-of-xcode-2',
   },
 ];

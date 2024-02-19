@@ -4,10 +4,16 @@ import { Image } from './Image';
 import { themes } from '@/utils/theme';
 import { FaHeart } from 'react-icons/fa';
 import { BiSolidMessageRounded } from 'react-icons/bi';
+import { useRouter } from 'next/navigation';
 
 export const BlogCard = (props: BlogType) => {
+  const router = useRouter();
+
+  const goToBlog = () => {
+    router.push(`/blog/${props.slug}`);
+  };
   return (
-    <Card>
+    <Card onClick={goToBlog}>
       <Image
         src={props.image}
         alt={props.title}
@@ -69,9 +75,11 @@ const CardDescription = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: #10131acc;
+  background: linear-gradient(90deg, #10131a, #00657e);
   backdrop-filter: blur(3px);
   transition: transform 0.3s ease-in-out;
+  border-top: 1px solid #2eb2d3;
+  overflow: hidden;
 
   height: 50%;
   .title {

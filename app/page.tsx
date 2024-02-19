@@ -6,9 +6,12 @@ import AboutSection from '@/sections/About';
 import EducationSkill from '@/sections/EducationSkill';
 import { themes } from './utils/theme';
 import PortfolioSection from './sections/Portfolio';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { myBlogs } from './utils';
-import { Pagination } from 'swiper/modules';
+import BlogSections from './sections/BlogSection';
+import ContactForm from './sections/ContactForm';
+import { BsTelephoneFill } from 'react-icons/bs';
+import { MdEmail } from 'react-icons/md';
+import { FaMapMarker } from 'react-icons/fa';
+import FooterSection from './sections/FooterSection';
 
 export default function Home() {
   return (
@@ -32,65 +35,54 @@ export default function Home() {
 
       <PortfolioSection />
 
-      <BlogSection>
-        <BlogHeader>
+      <BlogSections />
+
+      <ContactSection>
+        <ContactHeader>
           <div className='header-title'>
-            <Text
-              className='title'
-              transformed='capitalize'
-            >
-              Know More With My
-            </Text>
+            <Text className='title'>Contact</Text>
             <Text
               className='title'
               colored
-              transformed='capitalize'
             >
-              Article
+              Me{' '}
             </Text>
           </div>
-          <div className='description'>
-            Make sure you are using the latest version of Xcode. If not,
-            consider updating Xcode to the latest version available
-          </div>
-        </BlogHeader>
-        <BlogContent>
-          <CustomerSwiper
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            loop={true}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            modules={[Pagination]}
-            spaceBetween={30}
-            slidesPerView={3}
-            breakpoints={{
-              320: {
-                slidesPerView: 1,
-                spaceBetween: 10,
-              },
-              768: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-              },
-            }}
-          >
-            {myBlogs.map((blog, index) => (
-              <SwiperSlide key={index}>
-                <BlogCard {...blog} />
-              </SwiperSlide>
-            ))}
-          </CustomerSwiper>
-        </BlogContent>
-      </BlogSection>
+        </ContactHeader>
+        <ContactContent>
+          <Address>
+            <div className='title'>Address</div>
+            <address className='addreesses'>
+              In country of thousands hills and Great Rift Valley called RWANDA,
+              there live the blind texts. Kigali, Kicukiro
+              <div className='sub'>
+                <BsTelephoneFill />
+                <a href='tel:+250784647287'>+250 784 647 287</a>
+              </div>
+              <div className='sub'>
+                <MdEmail />
+                <a href='mailto:royalfabrice1234@gmail.com'>
+                  royalfabrice1234@gmail.com
+                </a>
+                <a href='mailto:ryan.fab@outlook.com'>ryan.fab@outlook.com</a>
+              </div>
+              <div className='sub'>
+                <FaMapMarker />
+                Kigali, Rwanda Kicukiro
+              </div>
+            </address>
+          </Address>
+          <FormContainer>
+            <ContactForm
+              initialEmail=''
+              message=''
+              name=''
+            />
+          </FormContainer>
+        </ContactContent>
+      </ContactSection>
+
+      <FooterSection />
     </Main>
   );
 }
@@ -120,16 +112,17 @@ const SingleCardExperience = styled.div`
   }
 `;
 
-const BlogSection = styled.section`
+const ContactSection = styled.section`
   padding: 2rem 0rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 2rem;
+  background: linear-gradient(to left, #0e202c, #11141a);
+  margin-bottom: 2rem;
 `;
 
-const BlogHeader = styled.div`
+const ContactHeader = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -144,63 +137,57 @@ const BlogHeader = styled.div`
       color: ${themes.primary};
     }
   }
-  .description {
-    color: ${themes.tertiary};
-    font-size: 14px;
-  }
 `;
 
-const BlogContent = styled.div`
+const ContactContent = styled.div`
   width: 100%;
   padding: 2rem 8rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
   overflow: hidden;
-  position: relative;
 
   @media (max-width: 768px) {
     padding: 2rem 2rem;
+    grid-template-columns: 1fr;
+    form {
+      margin-top: 2rem;
+    }
   }
-  margin-bottom: 2rem;
 `;
 
-const CustomerSwiper = styled(Swiper)`
-  width: 100%;
+const Address = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  color: ${themes.text};
   gap: 1rem;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    .swiper-slide:nth-child(odd) {
-      margin-top: 0rem;
-    }
-  }
-  .swiper-slide:nth-child(odd) {
-    margin-top: 1.5rem;
-  }
-  .swiper-slide {
-    overflow: hidden;
+  .title {
+    color: ${themes.text};
+    font-size: 1.5rem;
   }
 
-  .swiper-pagination {
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 0rem;
-    position: absolute;
-    .swiper-pagination-bullet {
-      background-color: ${themes.secondary};
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
+  .addreesses {
+    font-size: 1rem;
+    color: ${themes.tertiary};
+    .sub {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1rem;
+      color: ${themes.tertiary};
+      margin-top: 1rem;
+
+      a {
+        color: ${themes.tertiary};
+      }
     }
   }
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;

@@ -6,3 +6,5 @@ export * from './Image';
 export * from './ServiceCard';
 export * from './PortfolioCard';
 export * from './BlogCard';
+export * from './InputText';
+export * from './CommentCard';
