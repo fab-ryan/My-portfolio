@@ -4,7 +4,7 @@ type ImageProps = {
   src: string | StaticImageData;
   alt: string;
   width?: number;
-  height?: number;
+  height?: number ;
   transparent?: boolean;
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
   layout?: 'cover' | 'fill' | 'intrinsic' | 'responsive' | 'fixed';

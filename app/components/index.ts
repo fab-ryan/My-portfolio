@@ -8,3 +8,7 @@ export * from './PortfolioCard';
 export * from './BlogCard';
 export * from './InputText';
 export * from './CommentCard';
+export * from './DashboardLayout';
+export * from './Editor';
+export * from './Upload';
+export * from './Table';

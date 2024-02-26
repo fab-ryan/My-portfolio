@@ -13,10 +13,11 @@ type Props = {
   type: InputHTMLAttributes<HTMLInputElement>['type'] | 'textarea';
   name: string;
   placeholder: string;
-};
+} & FieldAttributes<{}>;
 
 const InputText: React.FC<Props> = (props) => {
-  const { type, placeholder, name } = props;
+  const { type, placeholder, name, onChange } = props;
+  console.log('props', props.value, onChange);
   return (
     <Input
       type={type}
