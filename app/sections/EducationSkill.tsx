@@ -2,8 +2,14 @@ import { myEducations, mySkills } from '@/utils';
 import styled from 'styled-components';
 import { themes } from '@/utils/theme';
 import { Text } from '@/components';
+import { useGetSkillsQuery } from '@/redux';
+import { useSelector } from '@/hooks/useActions';
+import { Skeletons } from '@/components';
 
 const EducationSkill = () => {
+  useGetSkillsQuery();
+  const { data, loading } = useSelector((state) => state.skills);
+
   return (
     <MoreAboutSection>
       <AboutTitle>
@@ -45,18 +51,24 @@ const EducationSkill = () => {
         <Skills>
           <div className='header-title'>My Skills</div>
           <Skill>
-            {mySkills.map((skill) => (
-              <div
-                key={skill.id}
-                className='skill-container'
-              >
-                <div className='skill-content'>
-                  <div className='title'>{skill.name}</div>
-                  <div className='percentage'>{skill.percentage}%</div>
+            {loading ? (
+              <Skeletons
+                count={5}
+              />
+            ) : (
+              data?.data?.map((skill) => (
+                <div
+                  key={skill._id}
+                  className='skill-container'
+                >
+                  <div className='skill-content'>
+                    <div className='title'>{skill.name}</div>
+                    <div className='percentage'>{skill.percent}%</div>
+                  </div>
+                  <ProgressBar percentage={skill.percent} />
                 </div>
-                <ProgressBar percentage={skill.percentage} />
-              </div>
-            ))}
+              ))
+            )}
           </Skill>
         </Skills>
       </EducationAndSkill>
@@ -186,7 +198,7 @@ const Education = styled.div`
 const Skills = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   .header-title {
     font-size: 20px;

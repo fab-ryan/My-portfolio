@@ -1,4 +1,4 @@
-import { BlogType } from '@/utils';
+import { BlogType } from '@/types';
 import styled from 'styled-components';
 import { Image } from './Image';
 import { themes } from '@/utils/theme';
@@ -19,6 +19,10 @@ export const BlogCard = (props: BlogType) => {
         alt={props.title}
         layout='responsive'
         objectFit='contain'
+        width={500}
+        height={500}
+        blurDataURL={props.image}
+        transparent={false}
       />
       <CardDescription>
         <div className='title'>{props.title}</div>
@@ -29,14 +33,14 @@ export const BlogCard = (props: BlogType) => {
               size='1rem'
               color='red'
             />
-            <span>{props.likes}</span>
+            <span>{props.likes.length}</span>
           </div>
           <div className='comments'>
             <BiSolidMessageRounded
               size='1rem'
               color='white'
             />
-            <span>{props.comments}</span>
+            <span>{props.comments.length}</span>
           </div>
         </div>
       </CardDescription>

@@ -8,10 +8,11 @@ type DropzoneProps = {
   setFiles: any;
   label: string;
   type?: 'image' | 'pdf';
+  disabled?: boolean;
 };
 
 function Dropzone(props: DropzoneProps) {
-  const { files, setFiles, label, type = 'image' } = props;
+  const { files, setFiles, label, type = 'image' ,disabled } = props;
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: type === 'image' ? { 'image/*': [] } : { 'application/pdf': [] },
@@ -52,8 +53,12 @@ function Dropzone(props: DropzoneProps) {
   return (
     <Container>
       <DropzoneContainer>
-        <DropzoneFile {...getRootProps({})}>
-          <input {...getInputProps()} />
+          <DropzoneFile {...getRootProps({})
+       
+      }>
+          <input {...getInputProps()}
+          disabled={disabled}
+          />
           <label>{label}</label>
         </DropzoneFile>
       </DropzoneContainer>

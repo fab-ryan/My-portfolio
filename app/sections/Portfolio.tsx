@@ -9,17 +9,30 @@ import 'swiper/css/pagination';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { themes } from '@/utils/theme';
+import { useGetCategoriesQuery } from '@/redux';
+import { useSelector } from '@/hooks/useActions';
 
+type ActiveCategory = {
+  name: string;
+  id: string;
+};
 const Portfolio = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-  
+  const [activeCategory, setActiveCategory] = useState<ActiveCategory>({
+    name: 'All',
+    id: '0',
+  });
+  useGetCategoriesQuery({ status: true });
+  const {
+    loading,
+    data: { data },
+  } = useSelector((state) => state.categories);
 
   const handleProjectCategory = (category: string) => {
     if (category === 'All') {
       return myProjects;
     }
     return myProjects.filter((project) => project.category === category);
-  }
+  };
 
   return (
     <PortfolioSection>
@@ -51,13 +64,31 @@ const Portfolio = () => {
         </div>
       </PortfolioHeader>
       <PortfolioCategories>
-        {Categories.map((category) => (
+        <CategoryButton
+          role='button'
+          tabIndex={0}
+          onClick={() =>
+            setActiveCategory({
+              name: 'All',
+              id: '0',
+            })
+          }
+          active={activeCategory.name === 'All' ? 'true' : 'false'}
+        >
+          All
+        </CategoryButton>
+        {data.map((category) => (
           <CategoryButton
-            key={category.id}
+            key={category._id}
             role='button'
             tabIndex={0}
-            onClick={() => setActiveCategory(category.name)}
-            active={activeCategory === category.name}
+            onClick={() =>
+              setActiveCategory({
+                name: category.name,
+                id: category._id,
+              })
+            }
+            active={activeCategory.name === category.name ? 'true' : 'false'}
           >
             {category.name}
           </CategoryButton>
@@ -95,7 +126,7 @@ const Portfolio = () => {
             }}
             effect='fade'
           >
-            {handleProjectCategory(activeCategory).map((project) => (
+            {handleProjectCategory(activeCategory.name).map((project) => (
               <SwiperSlide key={project.id}>
                 <PortfolioCard {...project} />
               </SwiperSlide>
@@ -148,17 +179,18 @@ const PortfolioCategories = styled.div`
   padding: 2rem 0rem;
 `;
 
-const CategoryButton = styled.div<{ active: boolean }>`
+const CategoryButton = styled.div<{ active: string }>`
   padding: 0.3rem 1rem;
   border-radius: 15px;
   border: 1px solid ${themes.secondary};
-  color: ${(props) => (props.active ? themes.text : themes.text)};
+  color: ${(props) =>
+    props.active.toString() === 'true' ? themes.text : themes.text};
 
   &:hover {
     cursor: pointer;
   }
   background-color: ${(props) =>
-    props.active ? themes.secondary : 'transparent'};
+    props.active === 'true' ? themes.secondary : 'transparent'};
 `;
 
 const PortfolioContent = styled.div`

@@ -23,9 +23,14 @@ export const Button = ({
       disabled={disabled}
       type={type}
     >
+      {disabled && <LoadingIcon />}
       {children}
     </ButtonContainer>
   );
+};
+
+const LoadingIcon = () => {
+  return <LoadingIcons />;
 };
 
 const ButtonContainer = styled.button`
@@ -37,7 +42,7 @@ const ButtonContainer = styled.button`
   text-decoration: none;
   display: inline-block;
   font-size: 15px;
-  
+
   font-weight: bold;
   margin: 4px 2px;
   cursor: pointer;
@@ -47,7 +52,7 @@ const ButtonContainer = styled.button`
     background: linear-gradient(to bottom, #00657e, #13a7d4);
   }
   &:disabled {
-    background: #ccc;
+    background: #00657ed4;
     cursor: not-allowed;
   }
   &:focus {
@@ -61,4 +66,25 @@ const ButtonContainer = styled.button`
   @media (max-width: 768px) {
     padding: 10px 20px;
   }
+
+  display: flex;
+  flex-direction: row;
+`;
+
+const LoadingIcons = styled.div`
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  margin-right: 10px;
 `;

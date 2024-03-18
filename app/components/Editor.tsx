@@ -6,14 +6,16 @@ import styled from 'styled-components';
 interface EditorProps {
   editorState: any;
   setEditorState: (state: any) => void;
+  disabled?: boolean;
 }
 
-function DraftEditor({ editorState, setEditorState }: EditorProps) {
+function DraftEditor({ editorState, setEditorState, disabled }: EditorProps) {
   return (
     <StyledEditor
       theme='snow'
       value={editorState}
       onChange={setEditorState}
+      readOnly={disabled}
       modules={{
         toolbar: [
           [{ header: '1' }, { header: '2' }, { font: [] }],
@@ -62,8 +64,6 @@ const StyledEditor = styled(ReactQuill)`
     background-color: ${themes.background} !important;
     border: 1px solid transparent !important;
     border-bottom: 1px solid ${themes.tertiary} !important;
-    
-
   }
   .ql-container {
     height: 300px;

@@ -1,3 +1,4 @@
+import { getPlaceholderImageURL } from '@/utils';
 import Image, { StaticImageData } from 'next/image';
 
 type ImageProps = {
@@ -8,6 +9,7 @@ type ImageProps = {
   transparent?: boolean;
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
   layout?: 'cover' | 'fill' | 'intrinsic' | 'responsive' | 'fixed';
+  blurDataURL?: string;
 };
 
 const ImageComponent = ({
@@ -18,6 +20,8 @@ const ImageComponent = ({
   transparent = true,
   objectFit = 'cover',
   layout = 'fixed',
+  blurDataURL,
+  
 }: ImageProps) => {
   return (
     <Image
@@ -28,11 +32,8 @@ const ImageComponent = ({
       fill={layout == 'fill'}
       layout={layout}
       objectFit={objectFit}
-      {...(transparent
-        ? {
-            placeholder: 'blur',
-          }
-        : {})}
+      placeholder={transparent ? 'empty' : 'blur'}
+      blurDataURL={getPlaceholderImageURL(src as string)}
     />
   );
 };

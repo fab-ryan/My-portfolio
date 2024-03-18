@@ -6,6 +6,7 @@ import { GrBlog } from 'react-icons/gr';
 import { IoCodeSlashSharp } from 'react-icons/io5';
 import { GrServices } from 'react-icons/gr';
 import { FaGraduationCap } from 'react-icons/fa6';
+import {MdCategory } from 'react-icons/md'
 
 export const NavLinks: {
   name: string;
@@ -58,6 +59,11 @@ export const SideBarLinks: {
     name: 'Skills',
     url: '/dashboard/skills',
     icon: <IoCodeSlashSharp />,
+  },
+  {
+    name:'Category',
+    url:'/dashboard/category',
+    icon:<MdCategory />
   },
   {
     name: 'Projects',

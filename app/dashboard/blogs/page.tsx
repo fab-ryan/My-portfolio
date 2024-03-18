@@ -1,14 +1,43 @@
 'use client';
-import { Button, DashboardLayouts } from '@/components';
+import { Button, DashboardLayouts, Skeletons } from '@/components';
 import styled from 'styled-components';
-import portfolio_1 from '@/assets/images/portfolio_1.png';
 import { Image, Text } from '@/components';
 import { FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
+import {
+  useChangeBlogStatusMutation,
+  useDeleteBlogMutation,
+  useGetAdminBlogsQuery,
+} from '@/redux';
+import { BlogType } from '@/types';
+import { useSelector } from '@/hooks/useActions';
+import { useEffect, useState } from 'react';
+import { DeleteModal } from '@/components/DeleteModal';
+import { toast } from 'react-toastify';
 
 export default function Blogs() {
   const router = useRouter();
+  useGetAdminBlogsQuery(null);
+  const { data, loading } = useSelector((state) => state.blogs);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedBlog, setSelectedBlog] = useState<BlogType>();
+  const [deleteBlog, loadingDeleteBlog] = useDeleteBlogMutation();
+
+  const handleDelete = (blog?: BlogType) => {
+    if (loadingDeleteBlog.isLoading) return;
+    if (blog === undefined) return;
+    deleteBlog({ slug: blog?.slug });
+  };
+
+  useEffect(() => {
+    if (loadingDeleteBlog) {
+      setShowModal(false);
+      toast.success(loadingDeleteBlog?.data?.message);
+
+    }
+  }, [loadingDeleteBlog.isSuccess, loadingDeleteBlog.isLoading]);
+
   return (
     <DashboardLayouts>
       <Container>
@@ -28,35 +57,92 @@ export default function Blogs() {
           </Button>
         </HeaderContent>
         <CardContainer>
-          <BlogCard />
-          <BlogCard />
-          <BlogCard />
+          {loading ? (
+            <div className='skeleton-container'>
+              <Skeletons
+                count={1}
+                height='350px'
+                width='100%'
+              />
+              <Skeletons
+                count={1}
+                height='350px'
+                width='100%'
+                containerClassName='flex-1'
+              />
+              <Skeletons
+                count={1}
+                height='350px'
+                width='100%'
+                containerClassName='flex-1'
+              />
+            </div>
+          ) : (
+            data?.data?.map((blog) => (
+              <BlogCard
+                key={blog._id}
+                blog={blog}
+                setShowModal={setShowModal}
+                setSelectedBlog={setSelectedBlog}
+              />
+            ))
+          )}
         </CardContainer>
+
+        <DeleteModal
+          show={showModal}
+          handleClose={() => setShowModal(false)}
+          handleDelete={() => handleDelete(selectedBlog)}
+          title={selectedBlog?.title ?? ''}
+          message='Are you sure you want to delete this blog?'
+        />
       </Container>
     </DashboardLayouts>
   );
 }
 
-const BlogCard = () => {
+type BlogCardProps = {
+  blog: BlogType;
+  setShowModal: (value: boolean) => void;
+  setSelectedBlog: (value: BlogType) => void;
+};
+const BlogCard = (props: BlogCardProps) => {
+  const { image, title, slug, preview, status } = props.blog;
+  const router = useRouter();
+  const [changeBlogStatus, loadingStates] = useChangeBlogStatusMutation();
+
+  const handleStatusChange = () => {
+    if (loadingStates.isLoading) return;
+    changeBlogStatus({ slug });
+  };
   return (
     <Card>
+      <Status
+        className={status === true ? 'active' : 'inactive'}
+        onClick={handleStatusChange}
+      >
+        {status === true ? 'Active' : 'Inactive'}
+      </Status>
       <Image
-        src={portfolio_1}
-        alt='portfolio_1'
+        src={image}
+        alt={title}
         objectFit='contain'
         layout='responsive'
         height={900}
+        width={1600}
       />
       <CardContent>
-        <h3>Blog title</h3>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-          tincidunt, nunc eu fermentum aliquam, elit turpis tincidunt turpis,
-        </p>
+        <h3>{title}</h3>
+        <p>{preview}</p>
       </CardContent>
       <ActionContainer>
-        <FaEdit />
-        <MdDelete />
+        <FaEdit onClick={() => router.push(`/dashboard/blogs/${slug}`)} />
+        <MdDelete
+          onClick={() => {
+            props.setShowModal(true);
+            props.setSelectedBlog(props.blog);
+          }}
+        />
       </ActionContainer>
     </Card>
   );
@@ -70,7 +156,7 @@ const ActionContainer = styled.div`
   align-items: center;
   flex-direction: column;
   background: linear-gradient(to left, #0e202cab, #11141aad);
-  gap: 20px;
+  gap: 30px;
   color: white;
   height: 100%;
   padding: 0 15px;
@@ -109,6 +195,12 @@ const CardContainer = styled.div`
   gap: 20px;
   margin-top: 20px;
   width: 100%;
+  .skeleton-container {
+    display: inline-grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-rows: 1fr;
+    gap: 20px;
+  }
 `;
 
 const Card = styled.div`
@@ -149,6 +241,7 @@ const CardContent = styled.div`
   align-items: center;
   gap: 20px;
   margin-top: 10px;
+  color: white;
 `;
 
 const HeaderContent = styled.div`
@@ -177,5 +270,33 @@ const HeaderContent = styled.div`
   @media (max-width: 767px) {
     padding: 2rem 0rem;
     order: 2;
+  }
+`;
+
+const Status = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(to left, #0e202cab, #11141aad);
+  gap: 20px;
+  color: white;
+  padding: 5px 15px;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+
+  transition: all 0.3s ease;
+  &.active {
+    color: green;
+  }
+  &.inactive {
+    color: red;
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 `;

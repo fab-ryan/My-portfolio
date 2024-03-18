@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { myBlogs } from '@/utils';
+import {  myBlogs } from '@/utils';
 import { Pagination } from 'swiper/modules';
 import { Text, BlogCard } from '@/components';
 
@@ -8,8 +8,15 @@ import 'swiper/css/pagination';
 
 import { themes } from '@/utils/theme';
 import styled from 'styled-components';
+import {useGetBlogsQuery} from '@/redux'
+import {useSelector} from '@/hooks/useActions'
 
 const BlogSections = () => {
+  useGetBlogsQuery(null);
+  const {loading,data:{data,message,}} = useSelector(state =>state.blogs);
+ 
+
+  
   return (
     <BlogSection>
       <BlogHeader>
@@ -62,11 +69,21 @@ const BlogSections = () => {
             },
           }}
         >
-          {myBlogs.map((blog, index) => (
+
+          {
+          loading ? 
+          [3,4,5,6].map((_,index) => (
+            <SwiperSlide key={index}>
+              <SkeletonSchema>
+              </SkeletonSchema>
+            </SwiperSlide>
+          ))
+          : data.map((blog, index) => (
             <SwiperSlide key={index}>
               <BlogCard {...blog} />
             </SwiperSlide>
           ))}
+          
         </CustomerSwiper>
       </BlogContent>
     </BlogSection>
@@ -158,4 +175,20 @@ const CustomerSwiper = styled(Swiper)`
       border-radius: 50%;
     }
   }
+`;
+
+const SkeletonSchema = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: 2px solid #2eb2d314;
+  background-color: #585f6940;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+  height: 280px;
+  position: relative;
+
 `;
