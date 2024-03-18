@@ -2,9 +2,21 @@
 import styled from 'styled-components';
 import { Button, DashboardLayouts, Text } from '@/components';
 import InputText from '@/components/InputText';
-import { Formik, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import { useRouter } from 'next/navigation';
+import { useCreateSkillMutation } from '@/redux';
+import { toast } from 'react-toastify';
 
 export default function CreateSkills() {
+  const router = useRouter();
+
+  const [createSkill, loadingResponse] = useCreateSkillMutation();
+
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    percentage: Yup.number().required('Percentage is required'),
+  });
   return (
     <DashboardLayouts>
       <Container>
@@ -15,24 +27,75 @@ export default function CreateSkills() {
               title: '',
               percentage: '',
             }}
-            onSubmit={(values) => {
-              console.log(values);
+            validationSchema={validationSchema}
+            onSubmit={(values, actions) => {
+              createSkill({
+                name: values.title,
+                percent: parseInt(values.percentage),
+              })
+                .unwrap()
+                .then((e) => {
+                  if (e.success) {
+                    toast.success(e.message);
+                    actions.setSubmitting(false);
+                    router.push('/dashboard/skills');
+                  } else {
+                    actions.setSubmitting(false);
+                  }
+                })
+                .catch((e) => {
+                  actions.setSubmitting(false);
+                  if (e?.data?.data !== null && e?.status === 400) {
+                    const { data } = e;
+                    actions.setErrors({
+                      title:
+                        (data?.data?.name &&
+                          data?.data[0].field === 'name' &&
+                          data?.data[0].message) ??
+                        '',
+                      percentage:
+                        (data?.data?.percent &&
+                          data?.data[0].field === 'percent' &&
+                          data?.data[0].message) ??
+                        '',
+                    });
+                  } else {
+                    toast.error(e?.data?.message);
+                  }
+                });
             }}
           >
-            <CustomForm>
-              <InputText
-                type='text'
-                name='title'
-                placeholder='Title'
-              />
-              <InputText
-                type='number'
-                name='percentage'
-                placeholder='Percentage'
-              />
-
-              <Button type='submit'>Create Skills</Button>
-            </CustomForm>
+            {({ values, handleChange, handleBlur, handleSubmit }) => (
+              <CustomForm>
+                <Field
+                  component={InputText}
+                  type='text'
+                  name='title'
+                  placeholder='Title'
+                  id='title'
+                  value={values.title}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Field
+                  component={InputText}
+                  type='number'
+                  name='percentage'
+                  placeholder='Percentage'
+                  id='percentage'
+                  value={values.percentage}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <Button
+                  type='submit'
+                  onClick={handleSubmit}
+                  disabled={loadingResponse.isLoading}
+                >
+                  Create Skills
+                </Button>
+              </CustomForm>
+            )}
           </Formik>
         </CardContainer>
       </Container>

@@ -3,16 +3,14 @@
 import styled from 'styled-components';
 import { Button } from '@/components';
 import * as Yup from 'yup';
-import {
-  withFormik,
-  FormikProps,
-  FormikErrors,
-  Form,
-  ErrorMessage,
-  Formik,
-} from 'formik';
+import { Form, ErrorMessage, Formik, Field } from 'formik';
 import InputText from '@/components/InputText';
 import { themes } from '@/utils/theme';
+import { useLoginMutation } from '@/redux';
+import { useSelector } from '@/hooks/useActions';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 type FormValues = {
   email: string;
@@ -21,9 +19,18 @@ type FormValues = {
 export default function Login() {
   const validationSchema = Yup.object<FormValues>().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
-    password: Yup.string(),
+    password: Yup.string().required('Password is required'),
   });
-
+  const router = useRouter();
+  const { data, loading, error } = useSelector((state) => state.auth);
+  const [login] = useLoginMutation();
+  useEffect(() => {
+    if (data.success && data.data.role == 'admin') {
+      router.push('/dashboard');
+    } else if (!data.success && data.data?.access_token !== '') {
+      router.push('/');
+    }
+  }, [data]);
   return (
     <Wrapper>
       <Containers>
@@ -35,35 +42,73 @@ export default function Login() {
           }}
           validationSchema={validationSchema}
           onSubmit={(values, actions) => {
-            console.log(values);
+            login(values)
+              .unwrap()
+              .then((e) => {
+                if (e.success) {
+                  localStorage.setItem('token', e.data.access_token);
+                  toast.success(e.message);
+                  actions.setSubmitting(false);
+                } else {
+                  toast.error(e.message);
+                  actions.setSubmitting(false);
+                  console.log(e, 'here');
+                }
+              })
+              .catch((e) => {
+                actions.setSubmitting(false);
+                if (e?.data?.data !== null && e?.status === 400) {
+                  const { data } = e;
+                  actions.setErrors({
+                    email:
+                      data?.data[0]?.field === 'email'
+                        ? data?.data[0]?.message
+                        : '',
+                    password:
+                      data?.data[0]?.field === 'password'
+                        ? data?.data[0]?.message
+                        : '',
+                  });
+                } else {
+                  toast.error(e?.data?.message);
+                }
+              });
           }}
         >
-          {({ isSubmitting, errors, touched, validateOnChange }) => (
-            <Form>
-              <InputText
+          {({
+            values,
+            isSubmitting,
+            errors,
+            touched,
+            validateOnChange,
+            handleChange,
+            handleBlur,
+          }) => (
+            <Form style={{ width: '100%' }}>
+              <Field
                 type='email'
                 placeholder='Email'
                 name='email'
+                value={values.email}
+                validateOnChange={validateOnChange}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                component={InputText}
+                id='email'
               />
-              {errors.email && touched.email ? (
-                <ErrorMessage
-                  name='email'
-                  component='div'
-                  className='error'
-                />
-              ) : null}
-              <InputText
+
+              <Field
+                component={InputText}
                 type='password'
                 placeholder='Password'
                 name='password'
+                value={values.password}
+                validateOnChange={validateOnChange}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                id='password'
               />
-              {errors.password && touched.password ? (
-                <ErrorMessage
-                  name='password'
-                  component='div'
-                  className='error'
-                />
-              ) : null}
+
               <Button disabled={isSubmitting}>Sign in</Button>
             </Form>
           )}

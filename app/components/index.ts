@@ -12,3 +12,4 @@ export * from './DashboardLayout';
 export * from './Editor';
 export * from './Upload';
 export * from './Table';
+export * from './Skeleton';
