@@ -21,7 +21,7 @@ export default function Catgories() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const router = useRouter();
-  useGetCategoriesQuery(null);
+  useGetCategoriesQuery({});
   const { data } = useSelector((state) => state.categories);
   return (
     <DashboardLayouts>
@@ -33,12 +33,12 @@ export default function Catgories() {
               className='sm'
               transformed='capitalize'
             >
-              Manage your skills
+              Manage your Categories
             </Text>
           </div>
 
           <Button onClick={() => router.push('/dashboard/category/create')}>
-            Create Blog
+            Create Category
           </Button>
         </HeaderContent>
         <Content>
@@ -84,6 +84,10 @@ export default function Catgories() {
   );
 }
 
+interface CreateProps {}
+const CreateModal = ({}: CreateProps): JSX.Element => {
+  return <div></div>;
+};
 const EditModal = ({ show, handleClose, skill }: any) => {
   const [updateSkill] = useUpdateSkillMutation();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -95,15 +99,16 @@ const EditModal = ({ show, handleClose, skill }: any) => {
       setSelectedSkill(skill);
       setShowModal(true);
       formRef.current?.setFieldValue('name', skill.name);
-      formRef.current?.setFieldValue('status', skill.status);
     }
   }, [show]);
+  
   const handleDelete = async (id: string) => {};
   return (
     <ModalContainer>
       <div>
         <h3>Edit Skill</h3>
         <CustomForm
+          innerRef={formRef}
           initialValues={{ name: '' }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('Name is required'),

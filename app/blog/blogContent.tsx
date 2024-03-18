@@ -1,5 +1,4 @@
 'use client';
-
 import {
   BottomNavBar,
   NavBar,
@@ -9,19 +8,35 @@ import {
   CommentCard,
   Button,
 } from '@/components';
-import { BlogType, myBlogs } from '@/utils';
+import { BlogType } from '@/types';
 import { themes } from '@/utils/theme';
 import styled from 'styled-components';
 import { BiSolidMessageRounded } from 'react-icons/bi';
 import { IoIosThumbsUp } from 'react-icons/io';
 import InputText from '@/components/InputText';
+import { Field, Form, Formik } from 'formik';
+import moment from 'moment';
+import { useEffect } from 'react';
+import { useGetBlogQuery } from '@/redux';
 
 type Props = {
-  blog?: BlogType;
+  slug: string;
 };
 
 export const BlogContents = (props: Props) => {
-  const { blog } = props;
+  const { slug } = props;
+  const { data, isLoading } = useGetBlogQuery({ slug: slug });
+
+  const blog: BlogType | undefined = data?.data;
+
+  useEffect(() => {
+    if (document !== undefined) {
+      document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+      });
+    }
+  }, []);
+
   return (
     <Main>
       <NavBar />
@@ -41,10 +56,17 @@ export const BlogContents = (props: Props) => {
                 alt={blog?.title}
                 layout='responsive'
                 objectFit='contain'
+                width={900}
+                height={900}
               />
             </ImageContainer>
 
-            <p className='blog_contents'>{blog.preview}</p>
+            <p
+              className='blog_contents'
+              dangerouslySetInnerHTML={{
+                __html: blog?.content,
+              }}
+            ></p>
             <StatisticsContainer>
               <div className='comments_Likes'>
                 <div className='likes'>
@@ -58,7 +80,7 @@ export const BlogContents = (props: Props) => {
               </div>
               <div className='date'>
                 <span>
-                  Published on: {new Date(Date.now()).toLocaleDateString()}
+                  Published on: {moment(blog.createdAt).format('MMMM Do YYYY')}
                 </span>
               </div>
             </StatisticsContainer>
@@ -86,26 +108,37 @@ export const BlogContents = (props: Props) => {
             ))}
           </CommentContainer>
         </RelatedComments>
+        <Formik
+          initialValues={{
+            name: '',
+            email: '',
+            comment: '',
+          }}
+          onSubmit={(values, actions) => {}}
+        >
+          <CommentForm>
+            <Field
+              component={InputText}
+              type='text'
+              placeholder='Write A Name'
+              name='name'
+            />
+            <Field
+              component={InputText}
+              type='email'
+              placeholder='Write an email'
+              name='email'
+            />
+            <Field
+              component={InputText}
+              type='textarea'
+              placeholder='Write a comment'
+              name='comment'
+            />
 
-        <CommentForm>
-          <InputText
-            type='text'
-            placeholder='Write A Name'
-            name='name'
-          />
-          <InputText
-            type='email'
-            placeholder='Write an email'
-            name='email'
-          />
-          <InputText
-            type='textarea'
-            placeholder='Write a comment'
-            name='comment'
-          />
-
-          <Button>Send Comment</Button>
-        </CommentForm>
+            <Button>Send Comment</Button>
+          </CommentForm>
+        </Formik>
 
         <Text
           className='title left'
@@ -115,12 +148,12 @@ export const BlogContents = (props: Props) => {
         </Text>
 
         <BlogRelated>
-          {myBlogs.slice(0, 3).map((blog, index) => (
+          {/* {myBlogs.slice(0, 3).map((blog, index) => (
             <BlogCard
               key={index}
               {...blog}
             />
-          ))}
+          ))} */}
         </BlogRelated>
       </BlogSection>
     </Main>
@@ -293,7 +326,7 @@ const CommentContainer = styled.div`
   justify-content: center;
 `;
 
-const CommentForm = styled.div`
+const CommentForm = styled(Form)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
