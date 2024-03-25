@@ -4,7 +4,20 @@ import { Text } from './ColoredText';
 import { FaCode } from 'react-icons/fa';
 import serviceCardBg from '@/assets/images/service_card.png';
 import Image from 'next/image';
-export const ServiceCard = () => {
+
+interface ServicesProps {
+  id: number;
+  title: string;
+  description: string;
+  icon: string | React.ReactNode;
+}
+
+export const ServiceCard = ({
+  id,
+  title,
+  description,
+  icon,
+}: ServicesProps) => {
   return (
     <ServiceCardContainer>
       <ServiceCardBd>
@@ -15,18 +28,13 @@ export const ServiceCard = () => {
           objectFit='container'
         />
       </ServiceCardBd>
-      <ServiceCardImage>
-        <FaCode size={80} />
-      </ServiceCardImage>
+      <ServiceCardImage>{icon}</ServiceCardImage>
       <ServiceCardContent>
         <div className='title'>
-          <Text transformed='capitalize'>Frontend Developer</Text>
+          <Text transformed='capitalize'>{title}</Text>
         </div>
         <div className='description'>
-          <p>
-            It seems like you are encountering an issue while downloading the
-            iOS 17.2 
-          </p>
+          <p>{description}</p>
         </div>
       </ServiceCardContent>
     </ServiceCardContainer>
@@ -51,14 +59,14 @@ const ServiceCardContainer = styled.div`
     margin-top: 2.3rem;
   }
 
-    @media (max-width: 768px) {
-        padding: 0rem 1rem;
+  @media (max-width: 768px) {
+    padding: 0rem 1rem;
 
-        &:nth-child(2),
-        &:nth-child(4) {
-            margin-top: 0rem;
-        }
+    &:nth-child(2),
+    &:nth-child(4) {
+      margin-top: 0rem;
     }
+  }
 `;
 
 const ServiceCardBd = styled.div`
@@ -77,10 +85,9 @@ const ServiceCardContent = styled.div`
   z-index: 2;
   .title {
     text-align: center;
-    div{
-        font-size: 1.5rem !important;
-        font-weight: 900;
-        
+    div {
+      font-size: 1.5rem !important;
+      font-weight: 900;
     }
   }
 

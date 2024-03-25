@@ -4,7 +4,14 @@ import Link from 'next/link';
 import { Button } from './Button';
 import { NavLinks } from '@/utils';
 
-export const NavBar = () => {
+import { useRouter } from 'next/navigation';
+
+type NavBarProps = {
+  ignore?: boolean;
+};
+
+export const NavBar = ({ ignore = false }: NavBarProps) => {
+  const router = useRouter();
   return (
     <Nav>
       <NavBarContainer>
@@ -21,13 +28,21 @@ export const NavBar = () => {
           <h1>abrice</h1>
         </LogoContainer>
         <Ul>
-          {NavLinks.map((link) => (
+          {NavLinks.map((link, index) => (
             <Li key={link.name}>
-              <Link href={link.url}>{link.name}</Link>
+              <Link href={ignore && index == 0 ? '/' : `${link.url}`}>
+                {link.name}
+              </Link>
             </Li>
           ))}
         </Ul>
-        <Button>Get Started</Button>
+        <Button
+          onClick={() => {
+            router.push('/login');
+          }}
+        >
+          Get Started
+        </Button>
       </NavBarContainer>
     </Nav>
   );
@@ -110,5 +125,4 @@ const NavBarLogo = styled.div`
   display: flex;
   align-items: center;
   height: 50px;
-
 `;

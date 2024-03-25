@@ -7,6 +7,8 @@ import {
   BlogCard,
   CommentCard,
   Button,
+  Skeletons,
+  LoadingIcon,
 } from '@/components';
 import { BlogType } from '@/types';
 import { themes } from '@/utils/theme';
@@ -16,8 +18,19 @@ import { IoIosThumbsUp } from 'react-icons/io';
 import InputText from '@/components/InputText';
 import { Field, Form, Formik } from 'formik';
 import moment from 'moment';
-import { useEffect } from 'react';
-import { useGetBlogQuery } from '@/redux';
+import { useEffect, useState } from 'react';
+import {
+  useGetBlogQuery,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useGetLikesQuery,
+  useLikeMutation,
+  useGetRelatesBlogsQuery,
+} from '@/redux';
+import { useSelector } from '@/hooks/useActions';
+import { isAuth as AuthChecking } from '@/utils';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 
 type Props = {
   slug: string;
@@ -26,7 +39,12 @@ type Props = {
 export const BlogContents = (props: Props) => {
   const { slug } = props;
   const { data, isLoading } = useGetBlogQuery({ slug: slug });
-
+  useGetCommentsQuery({ slug: slug });
+  useGetLikesQuery({ slug: slug });
+  const { data: relates, isLoading: isLoadingRelated } =
+    useGetRelatesBlogsQuery({ slug: slug });
+  const { loading, data: comments } = useSelector((state) => state.comments);
+  const { data: likes } = useSelector((state) => state.likes);
   const blog: BlogType | undefined = data?.data;
 
   useEffect(() => {
@@ -37,54 +55,82 @@ export const BlogContents = (props: Props) => {
     }
   }, []);
 
+  const [addLikeBlog, loadingAddLikeBlog] = useLikeMutation();
+  const handleAddLike = ({ slug }: { slug: string }) => {
+    if (loadingAddLikeBlog.isLoading) return;
+    addLikeBlog({ slug: slug })
+      .unwrap()
+      .then((e) => {
+        if (e.success) {
+          toast.success(e.message);
+        } else {
+          toast.error(e.message);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.data?.message);
+      })
+      .finally(() => {
+        console.log('finally');
+      });
+  };
+
   return (
     <Main>
-      <NavBar />
+      <NavBar ignore={true} />
       <BottomNavBar />
       <BlogSection>
-        {blog && (
-          <BlogContent>
-            <Text
-              className='title'
-              transformed='capitalize'
-            >
-              {blog?.title}
-            </Text>
-            <ImageContainer>
-              <Image
-                src={blog?.image}
-                alt={blog?.title}
-                layout='responsive'
-                objectFit='contain'
-                width={900}
-                height={900}
-              />
-            </ImageContainer>
+        {isLoading ? (
+          <LoadingIcon />
+        ) : (
+          blog && (
+            <BlogContent>
+              <Text
+                className='title'
+                transformed='capitalize'
+              >
+                {blog?.title}
+              </Text>
+              <ImageContainer>
+                <Image
+                  src={blog?.image}
+                  alt={blog?.title}
+                  layout='responsive'
+                  objectFit='contain'
+                  width={900}
+                  height={900}
+                />
+              </ImageContainer>
 
-            <p
-              className='blog_contents'
-              dangerouslySetInnerHTML={{
-                __html: blog?.content,
-              }}
-            ></p>
-            <StatisticsContainer>
-              <div className='comments_Likes'>
-                <div className='likes'>
-                  <BiSolidMessageRounded size='1.5rem' />
-                  <span>{blog.likes}</span>
+              <p
+                className='blog_contents'
+                dangerouslySetInnerHTML={{
+                  __html: blog?.content,
+                }}
+              ></p>
+              <StatisticsContainer>
+                <div className='comments_Likes'>
+                  <div className='likes'>
+                    <BiSolidMessageRounded size='1.5rem' />
+                    <span>{blog.comments?.length}</span>
+                  </div>
+                  <div
+                    className='comments'
+                    onClick={() => handleAddLike({ slug: slug })}
+                  >
+                    <IoIosThumbsUp size='1.5rem' />
+                    <span>{likes.data.length}</span>
+                  </div>
                 </div>
-                <div className='comments'>
-                  <IoIosThumbsUp size='1.5rem' />
-                  <span>{blog.comments}</span>
+                <div className='date'>
+                  <span>
+                    Published on:{' '}
+                    {moment(blog.createdAt).format('MMMM Do YYYY')}
+                  </span>
                 </div>
-              </div>
-              <div className='date'>
-                <span>
-                  Published on: {moment(blog.createdAt).format('MMMM Do YYYY')}
-                </span>
-              </div>
-            </StatisticsContainer>
-          </BlogContent>
+              </StatisticsContainer>
+            </BlogContent>
+          )
         )}
 
         <RelatedComments>
@@ -94,52 +140,27 @@ export const BlogContents = (props: Props) => {
           >
             Recent Comments
           </Text>
-          <div>
-            <Text
-              className='title'
-              transformed='capitalize'
-            >
-              No comments yet
-            </Text>
-          </div>
           <CommentContainer>
-            {[1, 3, 4, 5].map((index) => (
-              <CommentCard key={index} />
-            ))}
+            {loading ? (
+              <Skeletons />
+            ) : comments.data.length <= 0 ? (
+              <Text
+                className='title'
+                transformed='capitalize'
+              >
+                No comments yet
+              </Text>
+            ) : (
+              comments?.data?.map((comment) => (
+                <CommentCard
+                  key={comment._id}
+                  {...comment}
+                />
+              ))
+            )}
           </CommentContainer>
         </RelatedComments>
-        <Formik
-          initialValues={{
-            name: '',
-            email: '',
-            comment: '',
-          }}
-          onSubmit={(values, actions) => {}}
-        >
-          <CommentForm>
-            <Field
-              component={InputText}
-              type='text'
-              placeholder='Write A Name'
-              name='name'
-            />
-            <Field
-              component={InputText}
-              type='email'
-              placeholder='Write an email'
-              name='email'
-            />
-            <Field
-              component={InputText}
-              type='textarea'
-              placeholder='Write a comment'
-              name='comment'
-            />
-
-            <Button>Send Comment</Button>
-          </CommentForm>
-        </Formik>
-
+        <CommentSectionForm slug={slug} />
         <Text
           className='title left'
           transformed='capitalize'
@@ -148,6 +169,14 @@ export const BlogContents = (props: Props) => {
         </Text>
 
         <BlogRelated>
+          {isLoadingRelated
+            ? [1, 2, 3, 4].map((_, index) => <Skeletons key={index} />)
+            : relates?.data?.map((blog, index) => (
+                <BlogCard
+                  key={index}
+                  {...blog}
+                />
+              ))}
           {/* {myBlogs.slice(0, 3).map((blog, index) => (
             <BlogCard
               key={index}
@@ -157,6 +186,135 @@ export const BlogContents = (props: Props) => {
         </BlogRelated>
       </BlogSection>
     </Main>
+  );
+};
+
+const CommentSectionForm = ({ slug }: { slug: string }) => {
+  const [isAuth, setIsAuth] = useState(false);
+
+  async function checkAuth() {
+    setIsAuth(await AuthChecking());
+  }
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const handleValidationSchema = Yup.object().shape({
+    name: Yup.string().test(
+      isAuth ? 'name' : 'required',
+      'Name is required',
+      (value) => {
+        return isAuth ? true : !!value;
+      },
+    ),
+    email: Yup.string()
+      .test(isAuth ? 'email' : 'required', 'Email is required', (value) => {
+        return isAuth ? true : !!value;
+      })
+      .test(isAuth ? 'email' : 'email', 'Invalid email', (value) => {
+        return isAuth ? true : !!value;
+      })
+      .when('isAuth', {
+        is: false,
+        then: (schema) => schema.email('Email is invalid'),
+      }),
+    comment: Yup.string()
+      .required('Comment is required')
+      .min(10, 'your meessage is Too short'),
+  });
+  const [sendComment, loadingStates] = useCreateCommentMutation();
+
+  return (
+    <Formik
+      initialValues={{
+        name: '',
+        email: '',
+        comment: '',
+      }}
+      validationSchema={handleValidationSchema}
+      onSubmit={(values, actions) => {
+        sendComment({
+          slug: slug,
+          body: {
+            name: values.name,
+            email: values.email,
+            comment: values.comment,
+            isAuth: isAuth,
+          },
+        })
+          .unwrap()
+          .then((e) => {
+            if (e.success) {
+              actions.resetForm();
+              toast.success(e.message);
+            } else {
+              toast.error(e.message);
+              actions.setSubmitting(false);
+            }
+          })
+          .catch((e) => {
+            if (e.data?.data !== null && e?.status == 400) {
+              const { data } = e;
+              actions.setErrors({
+                email:
+                  data?.data[0]?.field === 'email'
+                    ? data?.data[0]?.message
+                    : '',
+                name:
+                  data?.data[0]?.field === 'name' ? data?.data[0]?.message : '',
+                comment:
+                  data?.data[0]?.field === 'comment'
+                    ? data?.data[0]?.message
+                    : '',
+              });
+            } else {
+              toast.error(e?.data?.message);
+            }
+          });
+      }}
+    >
+      {({ values, handleBlur, handleChange }) => (
+        <CommentForm>
+          {!isAuth && (
+            <Field
+              component={InputText}
+              type='text'
+              placeholder='Write A Name'
+              name='name'
+              id='name'
+              value={values.name}
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          )}
+          {!isAuth && (
+            <Field
+              component={InputText}
+              type='email'
+              placeholder='Write an email'
+              name='email'
+              id='email'
+              value={values.email}
+              onBlur={handleBlur}
+              onChange={handleChange}
+            />
+          )}
+
+          <Field
+            component={InputText}
+            type='textarea'
+            placeholder='Write a comment'
+            name='comment'
+            id='comment'
+            value={values.comment}
+            onBlur={handleBlur}
+            onChange={handleChange}
+          />
+
+          <Button disabled={loadingStates.isLoading}>Send Comment</Button>
+        </CommentForm>
+      )}
+    </Formik>
   );
 };
 

@@ -1,9 +1,19 @@
 'use client';
-import { Button, DashboardLayouts, Table, Image, Text } from '@/components';
+import {
+  Button,
+  DashboardLayouts,
+  Table,
+  Image,
+  Text,
+  LoadingIcon,
+} from '@/components';
 import styled from 'styled-components';
 import { themes } from '@/utils';
+import { useGetQueriesQuery } from '@/redux';
 
 export default function Contacts() {
+  const { data, isLoading,  } = useGetQueriesQuery(null);
+
   return (
     <DashboardLayouts>
       <Container>
@@ -21,36 +31,26 @@ export default function Contacts() {
         <Content>
           <Table tdHeaders={['#', 'Name', 'Email', 'Message', 'Action']}>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5}>
+                    <LoadingIcon className='margin-auto' />
+                  </td>
+                </tr>
+              ) : (
+                data?.data?.map((contact, index) => (
+                  <tr key={contact._id}>
+                    <td>{index + 1}</td>
+                    <td>{contact.name}</td>
+                    <td>{contact.email}</td>
+                    <td>{contact.message}</td>
+                    <td>
+                      <Button>Edit</Button>
+                      <Button>Delete</Button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         </Content>
@@ -102,6 +102,10 @@ const HeaderContent = styled.div`
 const Content = styled.div`
   width: 100%;
   display: grid;
+
+  .margin-auto {
+    margin: 0 auto;
+  }
 `;
 
 const ImageContainer = styled.div`

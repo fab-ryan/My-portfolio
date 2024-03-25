@@ -7,6 +7,7 @@ interface initialStateInterface {
   data: BlogResponses;
   error?: string;
 }
+
 const initialState: initialStateInterface = {
   loading: false,
   data: {
@@ -85,20 +86,36 @@ export const BlogsReducer = createSlice({
       },
     );
 
-    builder.addMatcher(blogApi.endpoints.changeBlogStatus.matchFulfilled, (state, action) => {
-      const updatedBlog = action.payload.data;
-      const index = state.data.data.findIndex((blog) => blog._id === updatedBlog._id);
-      state.data.data[index] = updatedBlog;
-    })
-    builder.addMatcher(blogApi.endpoints.changeBlogStatus.matchRejected, (state, action) => {
-      state.error = action.error.message;
-    })
-    builder.addMatcher(blogApi.endpoints.deleteBlog.matchFulfilled, (state, action) => {
-      const deletedBlog = action.payload.data;
-      state.data.data = state.data.data.filter((blog) => blog._id !== deletedBlog._id);
-    })
-    builder.addMatcher(blogApi.endpoints.deleteBlog.matchRejected, (state, action) => {
-      state.error = action.error.message;
-    })
+    builder.addMatcher(
+      blogApi.endpoints.changeBlogStatus.matchFulfilled,
+      (state, action) => {
+        const updatedBlog = action.payload.data;
+        const index = state.data.data.findIndex(
+          (blog) => blog._id === updatedBlog._id,
+        );
+        state.data.data[index] = updatedBlog;
+      },
+    );
+    builder.addMatcher(
+      blogApi.endpoints.changeBlogStatus.matchRejected,
+      (state, action) => {
+        state.error = action.error.message;
+      },
+    );
+    builder.addMatcher(
+      blogApi.endpoints.deleteBlog.matchFulfilled,
+      (state, action) => {
+        const deletedBlog = action.payload.data;
+        state.data.data = state.data.data.filter(
+          (blog) => blog._id !== deletedBlog._id,
+        );
+      },
+    );
+    builder.addMatcher(
+      blogApi.endpoints.deleteBlog.matchRejected,
+      (state, action) => {
+        state.error = action.error.message;
+      },
+    );
   },
 });

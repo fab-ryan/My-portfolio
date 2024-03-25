@@ -1,13 +1,22 @@
 'use client';
-import { Button, DashboardLayouts, Table, Image, Text } from '@/components';
+import {
+  Button,
+  DashboardLayouts,
+  Table,
+  Image,
+  Text,
+  LoadingIcon,
+} from '@/components';
 import styled from 'styled-components';
 import portfolio_1 from '@/assets/images/portfolio_1.png';
 
 import { useRouter } from 'next/navigation';
 import { themes } from '@/utils';
+import { useGetProjectsQuery } from '@/redux';
 
 export default function SKills() {
   const router = useRouter();
+  const { data, isLoading } = useGetProjectsQuery({ status: false });
   return (
     <DashboardLayouts>
       <Container>
@@ -23,7 +32,7 @@ export default function SKills() {
           </div>
 
           <Button onClick={() => router.push('/dashboard/projects/create')}>
-            Create Blog
+            Create Project
           </Button>
         </HeaderContent>
         <Content>
@@ -31,72 +40,45 @@ export default function SKills() {
             tdHeaders={['#', 'Title', 'Description', 'Url', 'image', 'Action']}
           >
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <ImageContainer>
-                    <Image
-                      src={portfolio_1}
-                      alt='portfolio_1'
-                      objectFit='contain'
-                      layout='responsive'
-                      height={400}
-                      width={400}
-                    />
-                  </ImageContainer>
-                </td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <ImageContainer>
-                    <Image
-                      src={portfolio_1}
-                      alt='portfolio_1'
-                      objectFit='contain'
-                      layout='responsive'
-                      height={400}
-                      width={400}
-                    />
-                  </ImageContainer>
-                </td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Blog title</td>
-                <td>20%</td>
-                <td>20%</td>
-                <td>
-                  <ImageContainer>
-                    <Image
-                      src={portfolio_1}
-                      alt='portfolio_1'
-                      objectFit='contain'
-                      layout='responsive'
-                      height={400}
-                      width={400}
-                    />
-                  </ImageContainer>
-                </td>
-                <td>
-                  <Button>Edit</Button>
-                  <Button>Delete</Button>
-                </td>
-              </tr>
+              {isLoading && (
+                <tr>
+                  <td colSpan={6}>
+                    <LoadingIcon  className='margin-auto'/>
+                  </td>
+                </tr>
+              )}
+              {data?.data?.map((project, index) => (
+                <tr key={project._id}>
+                  <td>{index + 1}</td>
+                  <td style={{width:'10%'}}>{project.title}</td>
+                  <td style={{width:'10%'}}>
+                    {project.description.split(' ').slice(0, 3).join(' ')}
+                  </td>
+                  <td style={{width:'10px'}}>{project.url}</td>
+                  <td>
+                    <ImageContainer>
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        objectFit='contain'
+                        layout='responsive'
+                        height={400}
+                        width={400}
+                      />
+                    </ImageContainer>
+                  </td>
+                  <td className='actions'>
+                    <Button
+                      onClick={() =>
+                        router.push(`/dashboard/projects/${project._id}`)
+                      }
+                    >
+                      Edit
+                    </Button>
+                    <Button>Delete</Button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Content>
@@ -132,7 +114,7 @@ const HeaderContent = styled.div`
     font-size: 0.8rem !important;
   }
   button {
-    width: 150px;
+    width: 200px;
     align-self: center;
     margin-top: 2rem;
   }
@@ -148,6 +130,15 @@ const HeaderContent = styled.div`
 const Content = styled.div`
   width: 100%;
   display: grid;
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+  }
+  .margin-auto {
+    margin: auto;
+  }
 `;
 
 const ImageContainer = styled.div`

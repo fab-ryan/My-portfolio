@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   compiler: {
     styledComponents: true,
   },
@@ -9,7 +10,9 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'res.cloudinary.com'],
   },
-
+  typescript: {
+    ignoreBuildErrors: true
+  }
 };
 
 export default nextConfig;

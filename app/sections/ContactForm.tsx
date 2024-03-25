@@ -10,6 +10,8 @@ import {
 import InputText from '@/components/InputText';
 import styled from 'styled-components';
 import { Button } from '@/components';
+import { useCreateQueryMutation } from '@/redux';
+import { toast } from 'react-toastify';
 
 interface FormValues {
   email: string;
@@ -17,13 +19,13 @@ interface FormValues {
   message: string;
 }
 
-const InnerForm = (props: FormikProps<FormValues>) => {
-  const { touched, errors, isSubmitting } = props;
+const InnerForm = () => {
   const validationSchema = Yup.object<FormValues>().shape({
-    name:Yup.string().required('Name is required'),
-    email:Yup.string().email("Invalid Email").required('Email is required'),
-    message:Yup.string().required("Message is required")
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Invalid Email').required('Email is required'),
+    message: Yup.string().required('Message is required'),
   });
+  const [createQuery, creatingStates] = useCreateQueryMutation();
   return (
     <Formik
       initialValues={{
@@ -32,7 +34,41 @@ const InnerForm = (props: FormikProps<FormValues>) => {
         message: '',
       }}
       validationSchema={validationSchema}
-      onSubmit={(values, actions) => {}}
+      onSubmit={(values, actions) => {
+        createQuery({ body: values })
+          .unwrap()
+          .then((e) => {
+            if (e.success) {
+              actions.setSubmitting(false);
+              actions.resetForm();
+              toast.success(e.message);
+            } else {
+              actions.setSubmitting(false);
+              actions.resetForm();
+              toast.error(e.message);
+            }
+          })
+          .catch((e) => {
+            if (e?.data?.data !== null && e?.status === 400) {
+              const { data } = e;
+              actions.setErrors({
+                email:
+                  data?.data[0]?.field === 'email'
+                    ? data?.data[0]?.message
+                    : '',
+                name:
+                  data?.data[0]?.field === 'name' ? data?.data[0]?.message : '',
+                message:
+                  data?.data[0]?.field === 'message'
+                    ? data?.data[0]?.message
+                    : '',
+              });
+            } else {
+              toast.error('Something went wrong');
+            }
+            actions.setSubmitting(false);
+          });
+      }}
     >
       {({ values, handleBlur, handleChange }) => (
         <Form>
@@ -62,7 +98,7 @@ const InnerForm = (props: FormikProps<FormValues>) => {
             type='textarea'
             name='message'
             placeholder='Message'
-            id='email'
+            id='message'
             component={InputText}
             onBlur={handleBlur}
             onChange={handleChange}
@@ -71,7 +107,7 @@ const InnerForm = (props: FormikProps<FormValues>) => {
 
           <Button
             type='submit'
-            disabled={isSubmitting}
+            disabled={creatingStates.isLoading}
           >
             Submit
           </Button>

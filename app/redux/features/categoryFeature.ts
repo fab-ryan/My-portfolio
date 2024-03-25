@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CategoryResponses, CategoryPayload } from '@/types';
-import { baseUrl } from '@/utils';
+import { authToken, baseUrl } from '@/utils';
 
 export const categoryApi = createApi({
   reducerPath: 'categoryApi',
@@ -14,7 +14,7 @@ export const categoryApi = createApi({
       }
     >({
       query: (status) => ({
-        url: `/categories${status ? `?status=${status}` : ''}`,
+        url: `/categories${status.status ? `?status=${status.status}` : ''}`,
 
         method: 'GET',
       }),
@@ -37,6 +37,25 @@ export const categoryApi = createApi({
         url: '/categories',
         method: 'POST',
         body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken()}`,
+        },
+      }),
+      invalidatesTags: ['Categories'],
+    }),
+    updateCategoryVisibility: builder.mutation<
+      CategoryResponses,
+      { id: string; body: { status: boolean } }
+    >({
+      query: (body) => ({
+        url: `/categories/${body.id}`,
+        method: 'PATCH',
+        body: body.body,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken()}`,
+        },
       }),
       invalidatesTags: ['Categories'],
     }),
@@ -46,11 +65,16 @@ export const categoryApi = createApi({
     >({
       query: (body) => ({
         url: `/categories/${body.id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: body.body,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken()}`,
+        },
       }),
       invalidatesTags: ['Categories'],
     }),
+
     deleteCategory: builder.mutation<CategoryResponses, string>({
       query: (id) => ({
         url: `/categories/${id}`,
@@ -61,4 +85,11 @@ export const categoryApi = createApi({
   }),
 });
 
-export const { useGetCategoriesQuery, useGetCategoryQuery } = categoryApi;
+export const {
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+  useUpdateCategoryMutation,
+  useUpdateCategoryVisibilityMutation,
+} = categoryApi;

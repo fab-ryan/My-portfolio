@@ -14,7 +14,7 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import rootReducer from './reducers';
-import { blogApi, categoryApi, authApi, skillApi } from './features';
+import { blogApi, categoryApi, authApi, skillApi,commentApi,likeApi , queriesApi,projectApi} from './features';
 export const store = configureStore({
   reducer: rootReducer,
 
@@ -29,6 +29,10 @@ export const store = configureStore({
       .concat(blogApi.middleware)
       .concat(categoryApi.middleware)
       .concat(skillApi.middleware)
+      .concat(commentApi.middleware)
+      .concat(likeApi.middleware)
+      .concat(queriesApi.middleware)
+      .concat(projectApi.middleware)
       .concat(authApi.middleware),
 });
 

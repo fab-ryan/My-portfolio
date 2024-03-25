@@ -24,8 +24,7 @@ const EducationSkill = () => {
           <Text transformed='capitalize'>Me</Text>
         </div>
         <div className='description'>
-          Make sure you are using the latest version of Xcode. If not, consider
-          updating Xcode to the latest version available
+         Education and Skills are the key to success in life. 
         </div>
       </AboutTitle>
 

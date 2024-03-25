@@ -5,6 +5,7 @@ import {
   BlogCreateResponse,
   BlogResponse,
   BlogUpdatePayload,
+  LikeResponse,
 } from '@/types';
 import { baseUrl, authToken } from '@/utils';
 
@@ -98,6 +99,13 @@ export const blogApi = createApi({
         },
       }),
     }),
+
+    getRelatesBlogs: builder.query<BlogResponses, { slug: string }>({
+      query: (slug) => ({
+        url: `/blogs/${slug.slug}/relates`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -109,4 +117,5 @@ export const {
   useUpdateBlogMutation,
   useChangeBlogStatusMutation,
   useDeleteBlogMutation,
+  useGetRelatesBlogsQuery,
 } = blogApi;
