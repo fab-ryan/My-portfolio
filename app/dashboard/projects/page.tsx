@@ -6,36 +6,34 @@ import {
   Image,
   Text,
   LoadingIcon,
-} from '@/components';
+} from '../../components';
 import styled from 'styled-components';
-import portfolio_1 from '@/assets/images/portfolio_1.png';
-
 import { useRouter } from 'next/navigation';
-import { themes } from '@/utils';
 import { useGetProjectsQuery } from '@/redux';
+import { Suspense } from 'react';
 
 export default function SKills() {
   const router = useRouter();
   const { data, isLoading } = useGetProjectsQuery({ status: false });
   return (
-    <DashboardLayouts>
-      <Container>
-        <HeaderContent>
-          <div className='titles'>
-            <Text transformed='capitalize'>Projects</Text>
-            <Text
-              className='sm'
-              transformed='capitalize'
-            >
-              Manage your projects
-            </Text>
-          </div>
+    <Container>
+      <HeaderContent>
+        <div className='titles'>
+          <Text transformed='capitalize'>Projects</Text>
+          <Text
+            className='sm'
+            transformed='capitalize'
+          >
+            Manage your projects
+          </Text>
+        </div>
 
-          <Button onClick={() => router.push('/dashboard/projects/create')}>
-            Create Project
-          </Button>
-        </HeaderContent>
-        <Content>
+        <Button onClick={() => router.push('/dashboard/projects/create')}>
+          Create Project
+        </Button>
+      </HeaderContent>
+      <Content>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
           <Table
             tdHeaders={['#', 'Title', 'Description', 'Url', 'image', 'Action']}
           >
@@ -43,18 +41,18 @@ export default function SKills() {
               {isLoading && (
                 <tr>
                   <td colSpan={6}>
-                    <LoadingIcon  className='margin-auto'/>
+                    <LoadingIcon className='margin-auto' />
                   </td>
                 </tr>
               )}
               {data?.data?.map((project, index) => (
                 <tr key={project._id}>
                   <td>{index + 1}</td>
-                  <td style={{width:'10%'}}>{project.title}</td>
-                  <td style={{width:'10%'}}>
+                  <td style={{ width: '10%' }}>{project.title}</td>
+                  <td style={{ width: '10%' }}>
                     {project.description.split(' ').slice(0, 3).join(' ')}
                   </td>
-                  <td style={{width:'10px'}}>{project.url}</td>
+                  <td style={{ width: '10px' }}>{project.url}</td>
                   <td>
                     <ImageContainer>
                       <Image
@@ -81,9 +79,9 @@ export default function SKills() {
               ))}
             </tbody>
           </Table>
-        </Content>
-      </Container>
-    </DashboardLayouts>
+        </Suspense>
+      </Content>
+    </Container>
   );
 }
 

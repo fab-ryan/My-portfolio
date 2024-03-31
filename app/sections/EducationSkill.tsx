@@ -1,10 +1,10 @@
 import { myEducations, mySkills } from '@/utils';
 import styled from 'styled-components';
 import { themes } from '@/utils/theme';
-import { Text } from '@/components';
+import { Text } from '../components';
 import { useGetSkillsQuery } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
-import { Skeletons } from '@/components';
+import { Skeletons } from '../components';
 
 const EducationSkill = () => {
   useGetSkillsQuery();

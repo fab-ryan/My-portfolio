@@ -9,13 +9,13 @@ import {
   Button,
   Skeletons,
   LoadingIcon,
-} from '@/components';
+} from '../components';
 import { BlogType } from '@/types';
 import { themes } from '@/utils/theme';
 import styled from 'styled-components';
 import { BiSolidMessageRounded } from 'react-icons/bi';
 import { IoIosThumbsUp } from 'react-icons/io';
-import InputText from '@/components/InputText';
+import InputText from '../components/InputText';
 import { Field, Form, Formik } from 'formik';
 import moment from 'moment';
 import { useEffect, useState } from 'react';

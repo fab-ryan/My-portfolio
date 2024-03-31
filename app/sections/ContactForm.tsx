@@ -7,9 +7,9 @@ import {
   Field,
   Formik,
 } from 'formik';
-import InputText from '@/components/InputText';
+import InputText from '../components/InputText';
 import styled from 'styled-components';
-import { Button } from '@/components';
+import { Button } from '../components';
 import { useCreateQueryMutation } from '@/redux';
 import { toast } from 'react-toastify';
 

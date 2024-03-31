@@ -2,7 +2,7 @@ import { themes } from '@/utils/theme';
 import styled from 'styled-components';
 import profile from '@/assets/images/profile.jpeg';
 import Image from 'next/image';
-import { Text, Button } from '@/components';
+import { Text, Button } from '../components';
 import { handleDownloadResume } from '@/utils';
 
 const Home = (): JSX.Element => {

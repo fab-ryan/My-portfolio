@@ -6,16 +6,16 @@ import {
   Image,
   Text,
   LoadingIcon,
-} from '@/components';
+} from '../../components';
 import styled from 'styled-components';
 import { themes } from '@/utils';
 import { useGetQueriesQuery } from '@/redux';
+import { Suspense } from 'react';
 
 export default function Contacts() {
   const { data, isLoading,  } = useGetQueriesQuery(null);
 
   return (
-    <DashboardLayouts>
       <Container>
         <HeaderContent>
           <div className='titles'>
@@ -28,6 +28,7 @@ export default function Contacts() {
             </Text>
           </div>
         </HeaderContent>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <Content>
           <Table tdHeaders={['#', 'Name', 'Email', 'Message', 'Action']}>
             <tbody>
@@ -54,8 +55,8 @@ export default function Contacts() {
             </tbody>
           </Table>
         </Content>
+        </Suspense>
       </Container>
-    </DashboardLayouts>
   );
 }
 

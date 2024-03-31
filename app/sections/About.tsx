@@ -1,4 +1,4 @@
-import { ServiceCard, Text } from '@/components';
+import { ServiceCard, Text } from '../components';
 import { themes } from '@/utils/theme';
 import styled from 'styled-components';
 import { FaCode } from 'react-icons/fa';

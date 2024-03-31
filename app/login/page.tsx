@@ -1,14 +1,14 @@
 'use client';
 
 import styled from 'styled-components';
-import { Button } from '@/components';
+import { Button } from '../components';
 import * as Yup from 'yup';
 import { Form, ErrorMessage, Formik, Field } from 'formik';
-import InputText from '@/components/InputText';
+import InputText from '../components/InputText';
 import { themes } from '@/utils/theme';
 import { useLoginMutation } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
@@ -32,89 +32,91 @@ export default function Login() {
     }
   }, [data]);
   return (
-    <Wrapper>
-      <Containers>
-        <Title>Sign in</Title>
-        <Formik
-          initialValues={{
-            email: '',
-            password: '',
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values, actions) => {
-            login(values)
-              .unwrap()
-              .then((e) => {
-                if (e.success) {
-                  localStorage.setItem('token', e.data.access_token);
-                  toast.success(e.message);
+    <Suspense fallback={<div>Loading...</div>}>
+      <Wrapper>
+        <Containers>
+          <Title>Sign in</Title>
+          <Formik
+            initialValues={{
+              email: '',
+              password: '',
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values, actions) => {
+              login(values)
+                .unwrap()
+                .then((e) => {
+                  if (e.success) {
+                    localStorage.setItem('token', e.data.access_token);
+                    toast.success(e.message);
+                    actions.setSubmitting(false);
+                  } else {
+                    toast.error(e.message);
+                    actions.setSubmitting(false);
+                    console.log(e, 'here');
+                  }
+                })
+                .catch((e) => {
                   actions.setSubmitting(false);
-                } else {
-                  toast.error(e.message);
-                  actions.setSubmitting(false);
-                  console.log(e, 'here');
-                }
-              })
-              .catch((e) => {
-                actions.setSubmitting(false);
-                if (e?.data?.data !== null && e?.status === 400) {
-                  const { data } = e;
-                  actions.setErrors({
-                    email:
-                      data?.data[0]?.field === 'email'
-                        ? data?.data[0]?.message
-                        : '',
-                    password:
-                      data?.data[0]?.field === 'password'
-                        ? data?.data[0]?.message
-                        : '',
-                  });
-                } else {
-                  toast.error(e?.data?.message);
-                }
-              });
-          }}
-        >
-          {({
-            values,
-            isSubmitting,
-            errors,
-            touched,
-            validateOnChange,
-            handleChange,
-            handleBlur,
-          }) => (
-            <Form style={{ width: '100%' }}>
-              <Field
-                type='email'
-                placeholder='Email'
-                name='email'
-                value={values.email}
-                validateOnChange={validateOnChange}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                component={InputText}
-                id='email'
-              />
+                  if (e?.data?.data !== null && e?.status === 400) {
+                    const { data } = e;
+                    actions.setErrors({
+                      email:
+                        data?.data[0]?.field === 'email'
+                          ? data?.data[0]?.message
+                          : '',
+                      password:
+                        data?.data[0]?.field === 'password'
+                          ? data?.data[0]?.message
+                          : '',
+                    });
+                  } else {
+                    toast.error(e?.data?.message);
+                  }
+                });
+            }}
+          >
+            {({
+              values,
+              isSubmitting,
+              errors,
+              touched,
+              validateOnChange,
+              handleChange,
+              handleBlur,
+            }) => (
+              <Form style={{ width: '100%' }}>
+                <Field
+                  type='email'
+                  placeholder='Email'
+                  name='email'
+                  value={values.email}
+                  validateOnChange={validateOnChange}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  component={InputText}
+                  id='email'
+                />
 
-              <Field
-                component={InputText}
-                type='password'
-                placeholder='Password'
-                name='password'
-                value={values.password}
-                validateOnChange={validateOnChange}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                id='password'
-              />
+                <Field
+                  component={InputText}
+                  type='password'
+                  placeholder='Password'
+                  name='password'
+                  value={values.password}
+                  validateOnChange={validateOnChange}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  id='password'
+                />
 
-              <Button disabled={isSubmitting}>Sign in</Button>
-            </Form>
-          )}
-        </Formik>
-      </Containers>
-    </Wrapper>
+                <Button disabled={isSubmitting}>Sign in</Button>
+              </Form>
+            )}
+          </Formik>
+        </Containers>
+      </Wrapper>
+    </Suspense>
   );
 }
 

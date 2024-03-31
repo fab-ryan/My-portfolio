@@ -1,8 +1,8 @@
 'use client';
-import { Button, DashboardLayouts, Table } from '@/components';
+import { Button, DashboardLayouts, Table } from '../../components';
 import styled from 'styled-components';
 import portfolio_1 from '@/assets/images/portfolio_1.png';
-import { Image, Text } from '@/components';
+import { Image, Text } from '../../components';
 
 import { useRouter } from 'next/navigation';
 import { themes } from '@/utils';
@@ -10,7 +10,6 @@ import { themes } from '@/utils';
 export default function SKills() {
   const router = useRouter();
   return (
-    <DashboardLayouts>
       <Container>
         <HeaderContent>
           <div className='titles'>
@@ -61,7 +60,6 @@ export default function SKills() {
           </Table>
         </Content>
       </Container>
-    </DashboardLayouts>
   );
 }
 

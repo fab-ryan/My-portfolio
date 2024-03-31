@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { Categories, myProjects } from '../utils';
 
-import { Text, PortfolioCard, Skeletons } from '@/components';
+import { Text, PortfolioCard, Skeletons } from '../components';
 
 import 'swiper/css';
 import 'swiper/css/pagination';

@@ -1,3 +1,4 @@
+'use client';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 import { useEffect } from 'react';

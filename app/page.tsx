@@ -1,6 +1,6 @@
 'use client';
 import styled from 'styled-components';
-import { NavBar, BottomNavBar, Text, BlogCard } from '@components/index';
+import { NavBar, BottomNavBar, Text, BlogCard } from './components/index';
 import HomeSection from '@/sections/Home';
 import AboutSection from '@/sections/About';
 import EducationSkill from '@/sections/EducationSkill';
@@ -13,9 +13,9 @@ import { MdEmail } from 'react-icons/md';
 import { FaMapMarker } from 'react-icons/fa';
 import FooterSection from './sections/FooterSection';
 import { Suspense } from 'react';
-import { LoadingIcon } from '@components/index';
+import { LoadingIcon } from './components/index';
 
-export default function Home() {
+export default function Page() {
   return (
     <Suspense fallback={<LoadingIcon />}>
       <Main>

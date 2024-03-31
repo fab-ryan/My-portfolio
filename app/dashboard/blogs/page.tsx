@@ -1,7 +1,7 @@
 'use client';
-import { Button, DashboardLayouts, Skeletons } from '@/components';
+import { Button, DashboardLayouts, Skeletons } from '../../components';
 import styled from 'styled-components';
-import { Image, Text } from '@/components';
+import { Image, Text } from '../../components';
 import { FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -12,8 +12,8 @@ import {
 } from '@/redux';
 import { BlogType } from '@/types';
 import { useSelector } from '@/hooks/useActions';
-import { useEffect, useState } from 'react';
-import { DeleteModal } from '@/components/DeleteModal';
+import { Suspense, useEffect, useState } from 'react';
+import { DeleteModal } from '../../components/DeleteModal';
 import { toast } from 'react-toastify';
 
 export default function Blogs() {
@@ -39,7 +39,6 @@ export default function Blogs() {
   }, [loadingDeleteBlog.isSuccess, loadingDeleteBlog.isLoading]);
 
   return (
-    <DashboardLayouts>
       <Container>
         <HeaderContent>
           <div className='titles'>
@@ -56,6 +55,8 @@ export default function Blogs() {
             Create Blog
           </Button>
         </HeaderContent>
+        <Suspense fallback={<Skeletons count={1} height='350px' width='100%' />}>
+
         <CardContainer>
           {loading ? (
             <div className='skeleton-container'>
@@ -88,6 +89,7 @@ export default function Blogs() {
             ))
           )}
         </CardContainer>
+        </Suspense>
 
         <DeleteModal
           show={showModal}
@@ -97,7 +99,6 @@ export default function Blogs() {
           message='Are you sure you want to delete this blog?'
         />
       </Container>
-    </DashboardLayouts>
   );
 }
 

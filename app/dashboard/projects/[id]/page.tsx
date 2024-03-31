@@ -1,7 +1,13 @@
 'use client';
 
-import { Button, DashboardLayouts, Text, Upload } from '@/components';
-import InputText, { Select } from '@/components/InputText';
+import {
+  Button,
+  DashboardLayouts,
+  LoadingIcon,
+  Text,
+  Upload,
+} from '../../../components';
+import InputText, { Select } from '../../../components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import { useState } from 'react';
@@ -9,6 +15,7 @@ import * as Yup from 'yup';
 import { useGetCategoriesQuery, useCreateProjectMutation } from '@/redux';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function CreateProject() {
   const router = useRouter();
@@ -29,9 +36,9 @@ export default function CreateProject() {
   const [createProject, createStates] = useCreateProjectMutation();
 
   return (
-    <DashboardLayouts>
-      <Container>
-        <Text>Create Blog</Text>
+    <Container>
+      <Text>Create Blog</Text>
+      <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <CardContainer>
           <Formik
             initialValues={{
@@ -171,8 +178,8 @@ export default function CreateProject() {
             )}
           </Formik>
         </CardContainer>
-      </Container>
-    </DashboardLayouts>
+      </Suspense>
+    </Container>
   );
 }
 

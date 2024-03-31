@@ -1,9 +1,9 @@
 'use client';
-import { Button, DashboardLayouts, Table } from '@/components';
+import { Button, DashboardLayouts, LoadingIcon, Table } from '../../components';
 import styled from 'styled-components';
-import { Text } from '@/components';
-import { DeleteModal } from '@/components/DeleteModal';
-import InputText from '@/components/InputText';
+import { Text } from '../../components';
+import { DeleteModal } from '../../components/DeleteModal';
+import InputText from '../../components/InputText';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import {
@@ -14,7 +14,7 @@ import {
   useUpdateCategoryVisibilityMutation,
 } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
-import {  useEffect, useRef, useState } from 'react';
+import {  Suspense, useEffect, useRef, useState } from 'react';
 import { CategoryType } from '@/types';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -48,7 +48,6 @@ export default function Categories() {
 
   const [handleUpdateVisibility] = useUpdateCategoryVisibilityMutation();
   return (
-    <DashboardLayouts>
       <Container>
         <HeaderContent>
           <div className='titles'>
@@ -65,6 +64,7 @@ export default function Categories() {
             Create Category
           </Button>
         </HeaderContent>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <Content>
           <Table tdHeaders={['#', 'Title', 'Percentage', 'Action']}>
             <tbody>
@@ -108,6 +108,7 @@ export default function Categories() {
             </tbody>
           </Table>
         </Content>
+        </Suspense>
 
         {showDeleteModal && (
           <DeleteModal
@@ -133,7 +134,6 @@ export default function Categories() {
           />
         )}
       </Container>
-    </DashboardLayouts>
   );
 }
 

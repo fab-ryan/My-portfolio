@@ -1,12 +1,13 @@
 'use client';
 import styled from 'styled-components';
-import { Button, DashboardLayouts, Text } from '@/components';
-import InputText from '@/components/InputText';
+import { Button, DashboardLayouts, LoadingIcon, Text } from '../../../components';
+import InputText from '../../../components/InputText';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { useCreateSkillMutation } from '@/redux';
 import { toast } from 'react-toastify';
+import { Suspense } from 'react';
 
 export default function CreateSkills() {
   const router = useRouter();
@@ -18,9 +19,9 @@ export default function CreateSkills() {
     percentage: Yup.number().required('Percentage is required'),
   });
   return (
-    <DashboardLayouts>
       <Container>
         <Text>Create Skills</Text>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <CardContainer>
           <Formik
             initialValues={{
@@ -98,8 +99,8 @@ export default function CreateSkills() {
             )}
           </Formik>
         </CardContainer>
+        </Suspense>
       </Container>
-    </DashboardLayouts>
   );
 }
 

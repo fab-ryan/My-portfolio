@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {  myBlogs } from '@/utils';
 import { Pagination } from 'swiper/modules';
-import { Text, BlogCard } from '@/components';
+import { Text, BlogCard } from '../components';
 
 import 'swiper/css';
 import 'swiper/css/pagination';

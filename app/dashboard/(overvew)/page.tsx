@@ -2,11 +2,12 @@
 import styled from 'styled-components';
 import { FaHome } from 'react-icons/fa';
 import { themes, SideBarLinks, NavLinks } from '@/utils';
-import { DashboardLayouts, Text } from '@/components';
+import { DashboardLayouts, Text } from '../../components';
+import { Suspense } from 'react';
 
 export default function Dashboard() {
   return (
-    <DashboardLayouts>
+    <Suspense fallback={<div>Loading...</div>}>
       <Container>
         <Text colored>Dashboard</Text>
         <CardStaticsContainer>
@@ -19,7 +20,7 @@ export default function Dashboard() {
           <BrowserStatics />
         </BrowserStaticsContainer>
       </Container>
-    </DashboardLayouts>
+    </Suspense>
   );
 }
 
@@ -33,11 +34,7 @@ const CardStatics = () => {
 };
 
 const BrowserStatics = () => {
-  return (
-    <Card>
-      
-    </Card>
-  );
+  return <Card></Card>;
 };
 
 const Container = styled.div`
@@ -58,7 +55,11 @@ const CardStaticsContainer = styled.div`
   gap: 20px;
   margin-top: 20px;
   padding: 20px;
-  background:linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -83,7 +84,11 @@ const CardValue = styled.h1`
 const BrowserStaticsContainer = styled.div`
   margin-top: 20px;
   padding: 20px;
-  background:linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
