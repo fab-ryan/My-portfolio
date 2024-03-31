@@ -1,30 +1,53 @@
 'use client';
-import { Button, DashboardLayouts, Table } from '@/components';
+import { Button, DashboardLayouts, LoadingIcon, Table } from '../../components';
 import styled from 'styled-components';
-import { Text } from '@/components';
-import { DeleteModal } from '@/components/DeleteModal';
-import InputText from '@/components/InputText';
+import { Text } from '../../components';
+import { DeleteModal } from '../../components/DeleteModal';
+import InputText from '../../components/InputText';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import {
   useGetCategoriesQuery,
-  useDeleteSkillMutation,
-  useUpdateSkillMutation,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+  useUpdateCategoryVisibilityMutation,
 } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
-import { useEffect, useRef, useState } from 'react';
-import { SkillType } from '@/types';
+import {  Suspense, useEffect, useRef, useState } from 'react';
+import { CategoryType } from '@/types';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
-export default function Catgories() {
-  const [showModal, setShowModal] = useState<boolean>(false);
+export default function Categories() {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const router = useRouter();
-  useGetCategoriesQuery(null);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryType | null>();
+
+  useGetCategoriesQuery({});
   const { data } = useSelector((state) => state.categories);
+
+  const [deleteCategory, loadingState] = useDeleteCategoryMutation();
+  const handleDelete = (id: string) => {
+    deleteCategory(id)
+      .unwrap()
+      .then((e) => {
+        if (e.success) {
+          toast.success(e.message);
+          setShowDeleteModal(false);
+        } else {
+          toast.error(e.message);
+        }
+      })
+      .catch((e) => {
+        toast.error(e.data.message);
+      });
+  };
+
+  const [handleUpdateVisibility] = useUpdateCategoryVisibilityMutation();
   return (
-    <DashboardLayouts>
       <Container>
         <HeaderContent>
           <div className='titles'>
@@ -33,112 +56,282 @@ export default function Catgories() {
               className='sm'
               transformed='capitalize'
             >
-              Manage your skills
+              Manage your Categories
             </Text>
           </div>
 
-          <Button onClick={() => router.push('/dashboard/category/create')}>
-            Create Blog
+          <Button onClick={() => setShowCreateModal(true)}>
+            Create Category
           </Button>
         </HeaderContent>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <Content>
           <Table tdHeaders={['#', 'Title', 'Percentage', 'Action']}>
             <tbody>
-              {data?.data?.map((skill, index) => (
-                <tr key={skill._id}>
+              {data?.data?.map((category, index) => (
+                <tr key={category._id}>
                   <td>{index + 1}</td>
-                  <td>{skill?.name}</td>
+                  <td>{category?.name}</td>
                   <td>
-                    <Status status={skill?.status ? 'active' : 'inactive'}>
-                      {skill?.status ? 'active' : 'inactive'}
+                    <Status
+                      status={category?.status ? 'active' : 'inactive'}
+                      onClick={() => {
+                        handleUpdateVisibility({
+                          id: category?._id as string,
+                          body: { status: !category?.status },
+                        });
+                      }}
+                    >
+                      {category?.status ? 'active' : 'inactive'}
                     </Status>
                   </td>
                   <td className='actions'>
-                    <Button onClick={() => {}}>Edit</Button>
-                    <Button onClick={() => {}}>Delete</Button>
+                    <Button
+                      onClick={() => {
+                        setShowEditModal(true);
+                        setSelectedCategory(category);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setSelectedCategory(category);
+                      }}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         </Content>
+        </Suspense>
 
-        {/* {showModal && (
+        {showDeleteModal && (
           <DeleteModal
-            title='Delete Skill'
-            message='Are you sure you want to delete this skill?'
-            handleClose={() => setShowModal(false)}
-            handleDelete={() => handleDelete(skillId)}
-            show={showModal}
+            title='Delete Category'
+            message='Are you sure you want to delete this Category?'
+            handleClose={() => setShowDeleteModal(false)}
+            handleDelete={() => handleDelete(selectedCategory?._id as string)}
+            show={showDeleteModal}
+          />
+        )}
+
+        {showCreateModal && (
+          <CreateModal
+            show={showCreateModal}
+            handleClose={() => setShowCreateModal(false)}
           />
         )}
         {showEditModal && (
           <EditModal
             show={showEditModal}
             handleClose={() => setShowEditModal(false)}
-            skill={selectedSkill}
+            category={selectedCategory}
           />
-        )} */}
+        )}
       </Container>
-    </DashboardLayouts>
   );
 }
 
-const EditModal = ({ show, handleClose, skill }: any) => {
-  const [updateSkill] = useUpdateSkillMutation();
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [skillId, setSkillId] = useState<string>('');
-  const [selectedSkill, setSelectedSkill] = useState<SkillType | null>(null);
+interface CreateProps {
+  show: boolean;
+  handleClose: () => void;
+  category?: CategoryType | null;
+}
+const CreateModal = ({
+  show = false,
+  handleClose,
+}: CreateProps): JSX.Element | boolean => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const [createCategory, createStates] = useCreateCategoryMutation();
+
+  return (
+    show && (
+      <ModalContainer>
+        <div
+          ref={modalRef}
+          onClick={(e) => {
+            if (e.target === modalRef.current) {
+              handleClose();
+            }
+          }}
+        >
+          <h3
+            className='title'
+            style={{ color: 'white' }}
+          >
+            Create Skills
+          </h3>
+          <Formik
+            initialValues={{ name: '' }}
+            validationSchema={Yup.object().shape({
+              name: Yup.string().required('Name is required'),
+              status: Yup.boolean()
+                .required('Status is required')
+                .default(false),
+            })}
+            onSubmit={(values, actions) => {
+              createCategory({
+                name: values.name,
+              })
+                .unwrap()
+                .then((e) => {
+                  if (e.success) {
+                    toast.success(e.message);
+                    actions.setSubmitting(false);
+                    handleClose();
+                  } else {
+                    toast.error(e.message);
+                    actions.setSubmitting(false);
+                  }
+                })
+                .catch((e) => {
+                  actions.setSubmitting(false);
+                  if (e?.data?.data !== null && e?.status === 400) {
+                    const { data } = e;
+                    actions.setErrors({
+                      name:
+                        data?.data[0]?.field === 'name'
+                          ? data?.data[0]?.message
+                          : '',
+                    });
+                  } else {
+                    toast.error(e.data.message);
+                  }
+                });
+            }}
+          >
+            {({ values, handleBlur, handleChange, handleSubmit }) => (
+              <CustomForm>
+                <Field
+                  name='name'
+                  label='Name'
+                  component={InputText}
+                  placeholder='Enter skill name'
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  id='name'
+                />
+                <div className='actions'>
+                  <Button
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                    disabled={createStates.isLoading}
+                  >
+                    Create Category
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CustomForm>
+            )}
+          </Formik>
+        </div>
+      </ModalContainer>
+    )
+  );
+};
+const EditModal = ({ show, handleClose, category }: CreateProps) => {
+  const [updateCategory, updateStates] = useUpdateCategoryMutation();
   const formRef = useRef<FormikProps<any>>(null);
   useEffect(() => {
-    if (show) {
-      setSelectedSkill(skill);
-      setShowModal(true);
-      formRef.current?.setFieldValue('name', skill.name);
-      formRef.current?.setFieldValue('status', skill.status);
+    if (show && category) {
+      formRef.current?.setFieldValue('name', category?.name);
     }
   }, [show]);
-  const handleDelete = async (id: string) => {};
+
+  const modalRef = useRef<HTMLDivElement>(null);
+
   return (
     <ModalContainer>
-      <div>
-        <h3>Edit Skill</h3>
-        <CustomForm
+      <div
+        ref={modalRef}
+        onClick={(e) => {
+          if (e.target === modalRef.current) {
+            handleClose();
+          }
+        }}
+      >
+        <h3 style={{ color: 'white' }}>Edit Skill</h3>
+        <Formik
+          innerRef={formRef}
           initialValues={{ name: '' }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('Name is required'),
           })}
-          onSubmit={() => {}}
+          onSubmit={() => {
+            updateCategory({
+              id: category?._id as string,
+              body: {
+                name: formRef.current?.values.name,
+              },
+            })
+              .unwrap()
+              .then((e) => {
+                if (e.success) {
+                  toast.success(e.message);
+                  handleClose();
+                } else {
+                  toast.error(e.message);
+                }
+              })
+              .catch((e) => {
+                if (e?.data?.data !== null && e?.status === 400) {
+                  const { data } = e;
+                  formRef.current?.setErrors({
+                    name:
+                      data?.data[0]?.field === 'name'
+                        ? data?.data[0]?.message
+                        : '',
+                  });
+                } else {
+                  toast.error(e.data.message);
+                }
+              });
+          }}
         >
-          <Field
-            name='name'
-            label='Name'
-            component={InputText}
-            placeholder='Enter skill name'
-          />
-          <Field
-            name='status'
-            label='Status'
-            component={InputText}
-            placeholder='Enter skill status'
-          />
-          <div className='actions'>
-            <Button
-              onClick={() => {
-                formRef.current?.submitForm();
-              }}
-            >
-              Update
-            </Button>
-            <Button
-              onClick={() => {
-                handleClose();
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </CustomForm>
+          {({ values, handleBlur, handleChange, handleSubmit }) => (
+            <CustomForm>
+              <Field
+                name='name'
+                label='Name'
+                component={InputText}
+                placeholder='Enter skill name'
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                id='name'
+              />
+              <div className='actions'>
+                <Button
+                  onClick={() => handleSubmit}
+                  disabled={updateStates.isLoading}
+                >
+                  Update
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleClose();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CustomForm>
+          )}
+        </Formik>
       </div>
     </ModalContainer>
   );
@@ -194,6 +387,7 @@ const HeaderContent = styled.div`
   align-items: center;
   margin-bottom: 1rem;
   width: 100%;
+  color: white;
   .titles {
     display: flex;
     flex-direction: column;
@@ -204,7 +398,7 @@ const HeaderContent = styled.div`
     font-size: 0.8rem !important;
   }
   button {
-    width: 150px;
+    width: 200px;
     align-self: center;
     margin-top: 2rem;
   }
@@ -255,6 +449,14 @@ const CustomForm = styled(Form)`
   align-items: center;
   gap: 20px;
   padding: 20px;
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+  }
 `;
 
 const Status = styled.span<{ status: string }>`

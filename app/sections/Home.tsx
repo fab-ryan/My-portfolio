@@ -2,7 +2,8 @@ import { themes } from '@/utils/theme';
 import styled from 'styled-components';
 import profile from '@/assets/images/profile.jpeg';
 import Image from 'next/image';
-import { Text, Button } from '@/components';
+import { Text, Button } from '../components';
+import { handleDownloadResume } from '@/utils';
 
 const Home = (): JSX.Element => {
   return (
@@ -17,19 +18,15 @@ const Home = (): JSX.Element => {
         </HeaderTitle>
         <HeaderDescription>
           <p>
-            Greetinas, fellow dinital exclorers I am Wilkerson, a passionate and
-            innovative
+            I am a full-stack developer with a passion for creating beautiful
+            and functional user experiences.
           </p>
           <p>
-            Greetinas, fellow dinital exclorers I am Wilkerson, a passionate and
-            innovative
-          </p>
-          <p>
-            Greetinas, fellow dinital exclorers I am Wilkerson, a passionate and
-            innovative
+            I specialize in building responsive websites, web applications, and
+            e-commerce platforms.
           </p>
         </HeaderDescription>
-        <Button>Hire Me </Button>
+        <Button onClick={() => handleDownloadResume()}>Hire Me </Button>
       </HomeSectionContent>
       <HomeImageContent>
         <ProfileImage
@@ -65,7 +62,7 @@ const HomeSectionContainer = styled.section`
     padding: 0rem 1rem;
   }
 
-  margin-bottom:1rem;
+  margin-bottom: 1rem;
 `;
 const HomeSectionContent = styled.div`
   display: flex;

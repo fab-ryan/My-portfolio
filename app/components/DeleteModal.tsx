@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Button } from './Button';
 import styled from 'styled-components';
+import { themes } from '@/utils';
 
 interface DeleteModalProps {
   show: boolean;
@@ -26,8 +27,8 @@ export const DeleteModal = (props: DeleteModalProps) => {
         }}
       >
         <div>
-          <h3>{message}</h3>
-          <p>{title}</p>
+          <h3>{title}</h3>
+          <p>{message}</p>
           <div className='buttons'>
             <Button
               onClick={() => handleDelete()}
@@ -54,8 +55,11 @@ const ModalContainer = styled.div`
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
   z-index: 100;
+  div:first-child {
+    box-shadow: 0 0 18px 5px #3498db38;
+  }
   div {
-    background: white;
+    background: ${themes.background};
     padding: 20px;
     border-radius: 10px;
     display: flex;
@@ -63,6 +67,7 @@ const ModalContainer = styled.div`
     gap: 20px;
     transition: 0.3s;
     animation: slideUp 0.3s ease;
+    color: ${themes.text};
 
     @keyframes slideUp {
       from {

@@ -7,11 +7,12 @@ import {
   Editor,
   Upload,
   Image,
-} from '@/components';
-import InputText from '@/components/InputText';
+  LoadingIcon,
+} from '../../../components';
+import InputText from '../../../components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field, FormikProps } from 'formik';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useUpdateBlogMutation } from '@/redux';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -49,12 +50,12 @@ export default function EditBlog({ params }: { params: { slug: string } }) {
     }
   }, [data, loadingResponse]);
   return (
-    <DashboardLayouts>
-      <Container>
-        <CardHeader>
-          <Text>Edit this Blog</Text>
-          <Button onClick={() => router.push('/dashboard/blogs')}>Back</Button>
-        </CardHeader>
+    <Container>
+      <CardHeader>
+        <Text>Edit this Blog</Text>
+        <Button onClick={() => router.push('/dashboard/blogs')}>Back</Button>
+      </CardHeader>
+      <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         {startEdit && (
           <Button
             onClick={() => setStartEdit(false)}
@@ -63,6 +64,7 @@ export default function EditBlog({ params }: { params: { slug: string } }) {
             Start Edit
           </Button>
         )}
+
         <CardContainer>
           <Formik
             innerRef={formikRef}
@@ -182,8 +184,8 @@ export default function EditBlog({ params }: { params: { slug: string } }) {
             )}
           </Formik>
         </CardContainer>
-      </Container>
-    </DashboardLayouts>
+      </Suspense>
+    </Container>
   );
 }
 

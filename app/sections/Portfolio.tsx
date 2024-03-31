@@ -2,14 +2,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { Categories, myProjects } from '../utils';
 
-import { Text, PortfolioCard } from '@/components';
+import { Text, PortfolioCard, Skeletons } from '../components';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { themes } from '@/utils/theme';
-import { useGetCategoriesQuery } from '@/redux';
+import { useGetCategoriesQuery, useGetProjectsQuery } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
 
 type ActiveCategory = {
@@ -21,9 +21,14 @@ const Portfolio = () => {
     name: 'All',
     id: '0',
   });
+
   useGetCategoriesQuery({ status: true });
+  const { data: projects, isLoading } = useGetProjectsQuery({
+    status: true,
+    category: activeCategory.id === '0' ? undefined : activeCategory.id,
+  });
   const {
-    loading,
+    loading: loadingCategories,
     data: { data },
   } = useSelector((state) => state.categories);
 
@@ -59,8 +64,8 @@ const Portfolio = () => {
           </Text>
         </div>
         <div className='description'>
-          Make sure you are using the latest version of Xcode. If not, consider
-          updating Xcode to the latest version available
+          Check out some of my latest projects. Want to see more?
+          
         </div>
       </PortfolioHeader>
       <PortfolioCategories>
@@ -77,7 +82,7 @@ const Portfolio = () => {
         >
           All
         </CategoryButton>
-        {data.map((category) => (
+        {data?.map((category) => (
           <CategoryButton
             key={category._id}
             role='button'
@@ -96,43 +101,54 @@ const Portfolio = () => {
       </PortfolioCategories>
 
       <PortfolioContent>
-        {myProjects.length > 0 && (
-          <CustomerSwiper
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            loop={true}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            modules={[Pagination]}
-            spaceBetween={30}
-            slidesPerView={3}
-            breakpoints={{
-              320: {
-                slidesPerView: 1,
-                spaceBetween: 10,
-              },
-              768: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 3,
-                spaceBetween: 30,
-              },
-            }}
-            effect='fade'
-          >
-            {handleProjectCategory(activeCategory.name).map((project) => (
-              <SwiperSlide key={project.id}>
-                <PortfolioCard {...project} />
-              </SwiperSlide>
-            ))}
-          </CustomerSwiper>
-        )}
+        <CustomerSwiper
+          pagination={{
+            clickable: true,
+            dynamicBullets: true,
+          }}
+          loop={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          modules={[Pagination]}
+          spaceBetween={30}
+          slidesPerView={3}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 30,
+            },
+          }}
+          effect='fade'
+        >
+          {isLoading
+            ? [1, 2, 3, 4, 5, 6].map((index) => (
+                <SwiperSlide key={index}>
+                  <Skeletons height='300px' />
+                </SwiperSlide>
+              ))
+            : projects &&
+              projects?.data?.length > 0 &&
+              projects?.data?.map((project, index) => (
+                <SwiperSlide key={index}>
+                  <PortfolioCard {...project} />
+                </SwiperSlide>
+              ))}
+          {!isLoading && projects?.data?.length === 0 && (
+              <NoProjects>
+              <Text>No projects found</Text>
+              </NoProjects>
+          )}
+        </CustomerSwiper>
       </PortfolioContent>
     </PortfolioSection>
   );
@@ -149,6 +165,12 @@ const PortfolioSection = styled.section`
   background: linear-gradient(to left, #0e202c, #11141a);
 `;
 
+const NoProjects = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+`
 const PortfolioHeader = styled.div`
   display: flex;
   flex-direction: column;

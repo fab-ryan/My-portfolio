@@ -29,8 +29,8 @@ export const Button = ({
   );
 };
 
-const LoadingIcon = () => {
-  return <LoadingIcons />;
+export const LoadingIcon = (className?: { className?: string }) => {
+  return <LoadingIcons className={className?.className} />;
 };
 
 const ButtonContainer = styled.button`

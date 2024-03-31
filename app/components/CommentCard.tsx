@@ -1,20 +1,25 @@
+import { Comment } from '@/types';
 import { themes } from '@/utils/theme';
 import styled from 'styled-components';
+import moment from 'moment';
 
-export const CommentCard = () => {
+export const CommentCard = (props: Comment) => {
+  const { name, comment, createdAt } = props;
+  const getFirstLetter = (name: string) => {
+    return name.charAt(0);
+  };
   return (
     <CommentContainer>
       <CommentHeader>
-        <div className='logo'>H</div>
+        <div className='logo'>{getFirstLetter(name)}</div>
         <div className='name_date'>
-          <div className='name'>Habimana</div>
-          <div className='date'>12/12/2021</div>
+          <div className='name'>{name}</div>
+          <div className='date'>
+            {moment(createdAt).format('MMMM Do YYYY, h:mm a')}
+          </div>
         </div>
       </CommentHeader>
-      <div className='comment'>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae,
-        voluptates.
-      </div>
+      <div className='comment'>{comment}</div>
     </CommentContainer>
   );
 };
@@ -29,7 +34,7 @@ const CommentContainer = styled.div`
 
   .comment {
     font-size: 0.9rem;
-    color:${themes.tertiary};
+    color: ${themes.tertiary};
   }
 `;
 const CommentHeader = styled.div`
@@ -40,7 +45,7 @@ const CommentHeader = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background:linear-gradient(135deg,#00657e 0%,#10131a 100%);
+    background: linear-gradient(135deg, #00657e 0%, #10131a 100%);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,9 +1,9 @@
 'use client';
-import { Button, DashboardLayouts, Table } from '@/components';
+import { Button, DashboardLayouts, LoadingIcon, Table } from '../../components';
 import styled from 'styled-components';
-import { Text } from '@/components';
-import { DeleteModal } from '@/components/DeleteModal';
-import InputText from '@/components/InputText';
+import { Text } from '../../components';
+import { DeleteModal } from '../../components/DeleteModal';
+import InputText from '../../components/InputText';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import {
@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SkillType } from '@/types';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { themes } from '@/utils';
+import { Suspense } from 'react';
 
 export default function SKills() {
   const router = useRouter();
@@ -44,23 +44,23 @@ export default function SKills() {
   };
 
   return (
-    <DashboardLayouts>
-      <Container>
-        <HeaderContent>
-          <div className='titles'>
-            <Text transformed='capitalize'>Skills</Text>
-            <Text
-              className='sm'
-              transformed='capitalize'
-            >
-              Manage your skills
-            </Text>
-          </div>
+    <Container>
+      <HeaderContent>
+        <div className='titles'>
+          <Text transformed='capitalize'>Skills</Text>
+          <Text
+            className='sm'
+            transformed='capitalize'
+          >
+            Manage your skills
+          </Text>
+        </div>
 
-          <Button onClick={() => router.push('/dashboard/skills/create')}>
-            Create Blog
-          </Button>
-        </HeaderContent>
+        <Button onClick={() => router.push('/dashboard/skills/create')}>
+          Create Blog
+        </Button>
+      </HeaderContent>
+      <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <Content>
           <Table tdHeaders={['#', 'Title', 'Percentage', 'Action']}>
             <tbody>
@@ -92,25 +92,25 @@ export default function SKills() {
             </tbody>
           </Table>
         </Content>
+      </Suspense>
 
-        {showModal && (
-          <DeleteModal
-            title='Delete Skill'
-            message='Are you sure you want to delete this skill?'
-            handleClose={() => setShowModal(false)}
-            handleDelete={() => handleDelete(skillId)}
-            show={showModal}
-          />
-        )}
-        {showEditModal && (
-          <EditModal
-            show={showEditModal}
-            handleClose={() => setShowEditModal(false)}
-            skill={selectedSkill}
-          />
-        )}
-      </Container>
-    </DashboardLayouts>
+      {showModal && (
+        <DeleteModal
+          title='Delete Skill'
+          message='Are you sure you want to delete this skill?'
+          handleClose={() => setShowModal(false)}
+          handleDelete={() => handleDelete(skillId)}
+          show={showModal}
+        />
+      )}
+      {showEditModal && (
+        <EditModal
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          skill={selectedSkill}
+        />
+      )}
+    </Container>
   );
 }
 interface EditModalProps {

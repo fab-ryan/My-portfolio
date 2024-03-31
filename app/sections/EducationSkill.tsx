@@ -1,10 +1,10 @@
 import { myEducations, mySkills } from '@/utils';
 import styled from 'styled-components';
 import { themes } from '@/utils/theme';
-import { Text } from '@/components';
+import { Text } from '../components';
 import { useGetSkillsQuery } from '@/redux';
 import { useSelector } from '@/hooks/useActions';
-import { Skeletons } from '@/components';
+import { Skeletons } from '../components';
 
 const EducationSkill = () => {
   useGetSkillsQuery();
@@ -24,8 +24,7 @@ const EducationSkill = () => {
           <Text transformed='capitalize'>Me</Text>
         </div>
         <div className='description'>
-          Make sure you are using the latest version of Xcode. If not, consider
-          updating Xcode to the latest version available
+         Education and Skills are the key to success in life. 
         </div>
       </AboutTitle>
 

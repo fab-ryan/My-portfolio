@@ -1,18 +1,20 @@
-import { ProjectType } from '@/utils';
+import { Project } from '@/types';
 import styled from 'styled-components';
 import { Image } from './Image';
 import { themes } from '@/utils/theme';
 import { FiLink } from 'react-icons/fi';
 import Link from 'next/link';
 
-export const PortfolioCard = (props: ProjectType) => {
+export const PortfolioCard = (props: Project) => {
   return (
     <Card>
       <Image
-        src={props.imageUrl}
+        src={props.image}
         alt={props.title}
         layout='responsive'
         objectFit='contain'
+        width={900}
+        height={900}
       />
       <CardDescription>
         <div className='title'>{props.title}</div>

@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {  myBlogs } from '@/utils';
 import { Pagination } from 'swiper/modules';
-import { Text, BlogCard } from '@/components';
+import { Text, BlogCard } from '../components';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -36,8 +36,7 @@ const BlogSections = () => {
           </Text>
         </div>
         <div className='description'>
-          Make sure you are using the latest version of Xcode. If not, consider
-          updating Xcode to the latest version available
+          Blogging is a great way to share your thoughts and ideas with the world.
         </div>
       </BlogHeader>
       <BlogContent>

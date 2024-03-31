@@ -1,10 +1,10 @@
 'use client';
 
-import { Button, DashboardLayouts, Text, Editor, Upload } from '@/components';
-import InputText from '@/components/InputText';
+import { Button, DashboardLayouts, Text, Editor, Upload, LoadingIcon } from '../../../components';
+import InputText from '../../../components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useCreateBlogMutation } from '@/redux';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -27,9 +27,9 @@ export default function CreateBlog() {
     }
   },[loadingResponse.isSuccess])
   return (
-    <DashboardLayouts>
       <Container>
         <Text>Create Blog</Text>
+        <Suspense fallback={<LoadingIcon className='margin-auto' />}>
         <CardContainer>
           <Formik
             initialValues={{
@@ -125,8 +125,8 @@ export default function CreateBlog() {
             )}
           </Formik>
         </CardContainer>
+        </Suspense>
       </Container>
-    </DashboardLayouts>
   );
 }
 

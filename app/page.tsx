@@ -1,6 +1,6 @@
 'use client';
 import styled from 'styled-components';
-import { NavBar, BottomNavBar, Text, BlogCard } from '@components/index';
+import { NavBar, BottomNavBar, Text, BlogCard } from './components/index';
 import HomeSection from '@/sections/Home';
 import AboutSection from '@/sections/About';
 import EducationSkill from '@/sections/EducationSkill';
@@ -12,78 +12,78 @@ import { BsTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { FaMapMarker } from 'react-icons/fa';
 import FooterSection from './sections/FooterSection';
+import { Suspense } from 'react';
+import { LoadingIcon } from './components/index';
 
-export default function Home() {
+export default function Page() {
   return (
-    <Main>
-      <NavBar />
-      <BottomNavBar />
-      <HomeSection />
-      <AboutSection />
-      <ExperienceSection>
-        <SingleCardExperience>
-          <Text className='counts'>40 +</Text>
-          <div className='title'>Projects Completed</div>
-        </SingleCardExperience>
-        <SingleCardExperience>
-          <Text className='counts'>20 +</Text>
-          <div className='title'>Experience</div>
-        </SingleCardExperience>
-      </ExperienceSection>
+    <Suspense fallback={<LoadingIcon />}>
+      <Main>
+        <NavBar />
+        <BottomNavBar />
+        <HomeSection />
+        <AboutSection />
+        <ExperienceSection>
+          <SingleCardExperience>
+            <Text className='counts'> 10 +</Text>
+            <div className='title'>Projects Completed</div>
+          </SingleCardExperience>
+          <SingleCardExperience>
+            <Text className='counts'>4 +</Text>
+            <div className='title'>Experience</div>
+          </SingleCardExperience>
+        </ExperienceSection>
 
-      <EducationSkill />
+        <EducationSkill />
 
-      <PortfolioSection />
+        <PortfolioSection />
 
-      <BlogSections />
+        <BlogSections />
 
-      <ContactSection>
-        <ContactHeader>
-          <div className='header-title'>
-            <Text className='title'>Contact</Text>
-            <Text
-              className='title'
-              colored
-            >
-              Me{' '}
-            </Text>
-          </div>
-        </ContactHeader>
-        <ContactContent>
-          <Address>
-            <div className='title'>Address</div>
-            <address className='addreesses'>
-              In country of thousands hills and Great Rift Valley called RWANDA,
-              there live the blind texts. Kigali, Kicukiro
-              <div className='sub'>
-                <BsTelephoneFill />
-                <a href='tel:+250784647287'>+250 784 647 287</a>
-              </div>
-              <div className='sub'>
-                <MdEmail />
-                <a href='mailto:royalfabrice1234@gmail.com'>
-                  royalfabrice1234@gmail.com
-                </a>
-                <a href='mailto:ryan.fab@outlook.com'>ryan.fab@outlook.com</a>
-              </div>
-              <div className='sub'>
-                <FaMapMarker />
-                Kigali, Rwanda Kicukiro
-              </div>
-            </address>
-          </Address>
-          <FormContainer>
-            <ContactForm
-              initialEmail=''
-              message=''
-              name=''
-            />
-          </FormContainer>
-        </ContactContent>
-      </ContactSection>
+        <ContactSection>
+          <ContactHeader>
+            <div className='header-title'>
+              <Text className='title'>Contact</Text>
+              <Text
+                className='title'
+                colored
+              >
+                Me{' '}
+              </Text>
+            </div>
+          </ContactHeader>
+          <ContactContent>
+            <Address>
+              <div className='title'>Address</div>
+              <address className='addreesses'>
+                In country of thousands hills and Great Rift Valley called
+                RWANDA, there live the blind texts. Kigali, Kicukiro
+                <div className='sub'>
+                  <BsTelephoneFill />
+                  <a href='tel:+250784647287'>+250 784 647 287</a>
+                </div>
+                <div className='sub'>
+                  <MdEmail />
+                  <a href='mailto:royalfabrice1234@gmail.com'>
+                    royalfabrice1234@gmail.com
+                  </a>
+                  <a href='mailto:ryan.fab@outlook.com'>ryan.fab@outlook.com</a>
+                </div>
+                <div className='sub'>
+                  <FaMapMarker />
+                  Kigali, Rwanda Kicukiro
+                </div>
+              </address>
+            </Address>
+            <FormContainer>
+              <ContactForm />
+            </FormContainer>
+          </ContactContent>
+        </ContactSection>
 
-      <FooterSection />
-    </Main>
+        <FooterSection />
+      </Main>
+    </Suspense>
   );
 }
 
