@@ -8,11 +8,20 @@ const nextConfig = {
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   images: {
-    domains: ['localhost', 'res.cloudinary.com'],
+  remotePatterns: [
+    {
+      protocol:'https',
+      hostname: '**',
+    },
+    {
+      protocol:'http',
+      hostname: '**',
+    }
+  ]
   },
   typescript: {
-    ignoreBuildErrors: true
-  }
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

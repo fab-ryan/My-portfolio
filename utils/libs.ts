@@ -35,6 +35,7 @@ export const isTokenValid = async (token: string): Promise<boolean> => {
 };
 
 export const handleDownloadResume = async () => {
+ 
   try {
     const res = await fetch(`${baseUrl}/download/resume`, {
       method: 'GET',
@@ -49,6 +50,7 @@ export const handleDownloadResume = async () => {
     a.href = url;
     a.download = fileName || `NDACYAYISENGA Fabrice Resume.pdf`;
     a.click();
+    window.URL.revokeObjectURL(url);
   } catch (e) {
     console.log(e);
   }

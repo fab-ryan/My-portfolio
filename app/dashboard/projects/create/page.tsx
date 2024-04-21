@@ -6,8 +6,8 @@ import {
   LoadingIcon,
   Text,
   Upload,
-} from '../../../components';
-import InputText, { Select } from '../../../components/InputText';
+} from '@/components';
+import InputText, { Select } from '@/components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import { useState } from 'react';

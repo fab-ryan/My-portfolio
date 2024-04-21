@@ -1,7 +1,7 @@
 'use client';
 import styled from 'styled-components';
-import { Button, DashboardLayouts, LoadingIcon, Text } from '../../../components';
-import InputText from '../../../components/InputText';
+import { Button, DashboardLayouts, LoadingIcon, Text } from '@/components';
+import InputText from '@/components/InputText';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';

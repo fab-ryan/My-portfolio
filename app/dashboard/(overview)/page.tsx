@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import { FaHome } from 'react-icons/fa';
 import { themes, SideBarLinks, NavLinks } from '@/utils';
-import { DashboardLayouts, Text } from '../../components';
+import { DashboardLayouts, Text } from '@/components';
 import { Suspense } from 'react';
 
 export default function Dashboard() {

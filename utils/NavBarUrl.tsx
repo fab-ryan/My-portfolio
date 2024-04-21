@@ -25,12 +25,12 @@ export const NavLinks: {
   },
   {
     name: 'Portfolio',
-    url: '#',
+    url: '#portfolio',
     icon: <VscFileSubmodule />,
   },
   {
     name: 'Blog',
-    url: '#',
+    url: '#blog',
     icon: <GrBlog />,
   },
   {

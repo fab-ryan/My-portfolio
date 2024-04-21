@@ -61,6 +61,7 @@ const ServiceCardContainer = styled.div`
 
   @media (max-width: 768px) {
     padding: 0rem 1rem;
+    height: 400px;
 
     &:nth-child(2),
     &:nth-child(4) {

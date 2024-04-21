@@ -6,7 +6,7 @@ import {
   Image,
   Text,
   LoadingIcon,
-} from '../../components';
+} from '@/components';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { useGetProjectsQuery } from '@/redux';

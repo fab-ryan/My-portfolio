@@ -1,7 +1,7 @@
 'use client';
-import { Button, DashboardLayouts, Skeletons } from '../../components';
+import { Button, DashboardLayouts, Skeletons } from '@/components';
 import styled from 'styled-components';
-import { Image, Text } from '../../components';
+import { Image, Text } from '@/components';
 import { FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -13,7 +13,7 @@ import {
 import { BlogType } from '@/types';
 import { useSelector } from '@/hooks/useActions';
 import { Suspense, useEffect, useState } from 'react';
-import { DeleteModal } from '../../components/DeleteModal';
+import { DeleteModal } from '@/components/DeleteModal';
 import { toast } from 'react-toastify';
 
 export default function Blogs() {

@@ -123,10 +123,15 @@ const AboutSection = styled.section`
   }
 
   @media (max-width: 768px) {
+    // grid-template-columns: 1fr;
+    // grid-template-rows: 1fr 1fr;
+    // grid-template-areas: 'left' 'right';
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 6fr;
-    grid-template-areas: 'left' 'right';
+    grid-template-rows: max-content;
+    grid-template-areas: 'left';
+    
     padding: 0rem 1rem;
+
   }
 `;
 
@@ -165,7 +170,9 @@ const ABoutSectionRight = styled.div`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: max-content;
+
     padding: 0rem 1rem;
+
   }
 `;

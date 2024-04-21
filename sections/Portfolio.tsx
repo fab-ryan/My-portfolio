@@ -1,3 +1,4 @@
+'use client';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { Categories, myProjects } from '../utils';
@@ -40,7 +41,7 @@ const Portfolio = () => {
   };
 
   return (
-    <PortfolioSection>
+    <PortfolioSection id='portfolio'>
       <PortfolioHeader>
         <div className='header-title'>
           <Text

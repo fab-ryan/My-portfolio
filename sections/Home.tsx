@@ -75,6 +75,8 @@ const HomeSectionContent = styled.div`
     width: 150px;
     align-self: center;
     margin-top: 2rem;
+    display: flex;
+    justify-content: center;
   }
   @media (max-width: 414px) {
     font-size: 1.5rem;

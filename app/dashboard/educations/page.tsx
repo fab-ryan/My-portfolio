@@ -1,8 +1,8 @@
 'use client';
-import { Button, DashboardLayouts, Table } from '../../components';
+import { Button, DashboardLayouts, Table } from '@/components';
 import styled from 'styled-components';
 import portfolio_1 from '@/assets/images/portfolio_1.png';
-import { Image, Text } from '../../components';
+import { Image, Text } from '@/components';
 
 import { useRouter } from 'next/navigation';
 import { themes } from '@/utils';
