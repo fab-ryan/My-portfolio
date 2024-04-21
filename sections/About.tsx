@@ -53,6 +53,21 @@ const About = () => {
           <Text colored>Services</Text>
         </div>
         <div className='description'>
+          We are a team of passionate developers, designers, and marketers who
+          are committed to providing innovative solutions to our clients. Our
+          services include web development, mobile app development, digital
+          marketing, and more. We work closely with our clients to understand
+          their needs and deliver customized solutions that meet their goals.
+          Whether you need a new website, a mobile app, or a digital marketing
+          campaign, we have the expertise and experience to help you succeed.
+        </div>
+      </ABoutSectionLeft>
+      {/* <ABoutSectionLeft>
+        <div className='title'>
+          <Text>My</Text>
+          <Text colored>Services</Text>
+        </div>
+        <div className='description'>
           <p>
             In the realm of software development within a service-oriented
             context, my role encompasses several key responsibilities aimed at
@@ -66,31 +81,8 @@ const About = () => {
             requiring adeptness in technologies like RESTful APIs, GraphQL, and
             messaging queues.
           </p>
-          <p>
-            Additionally, I am responsible for testing and quality assurance,
-            ensuring the reliability, stability, and performance of your
-            services through rigorous testing practices. This includes writing
-            unit tests, integration tests, and end-to-end tests, as well as
-            participating in code reviews and quality assurance processes.
-            Deployment and management of services in production environments
-            fall under your purview as well, where collaboration with DevOps
-            teams is essential for tasks such as containerization,
-            orchestration, continuous integration/continuous deployment (CI/CD),
-            and monitoring.
-          </p>
-          <p>
-            Maintenance and support form another critical aspect of my role,
-            involving troubleshooting issues, addressing bugs, implementing
-            patches or updates, and ensuring high availability and reliability
-            of services. Finally, documentation and knowledge sharing play a
-            crucial role in fostering collaboration and facilitating ongoing
-            improvement. Documenting code, APIs, and architectural decisions
-            helps streamline collaboration within teams and across the
-            organization, while knowledge-sharing sessions and documentation aid
-            in disseminating insights and best practices.
-          </p>
         </div>
-      </ABoutSectionLeft>
+      </ABoutSectionLeft> */}
       <ABoutSectionRight>
         {services.map((service) => (
           <ServiceCard
@@ -109,12 +101,12 @@ const About = () => {
 export default About;
 
 const AboutSection = styled.section`
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: 'left right';
-  grid-gap: 5rem;
-  padding: 0rem 7rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 2rem;
+  padding: 0rem 2rem;
   margin-top: 5rem;
   margin-bottom: 5rem;
 
@@ -129,9 +121,8 @@ const AboutSection = styled.section`
     grid-template-columns: 1fr;
     grid-template-rows: max-content;
     grid-template-areas: 'left';
-    
-    padding: 0rem 1rem;
 
+    padding: 0rem 1rem;
   }
 `;
 
@@ -141,17 +132,26 @@ const ABoutSectionLeft = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
     gap: 1rem;
+    font-size: 3rem;
+    font-weight: 900;
+    color: ${themes.primary};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .description {
     margin-top: 3rem;
-    p {
-      margin-bottom: 1rem;
-      color: ${themes.tertiary};
-    }
-
+    color: ${themes.tertiary};
+    margin-bottom: 1rem;
+    width: 100%;
+    padding: 0rem 9rem;
     @media (max-width: 768px) {
       margin-top: 1rem;
+    }
+    @media (max-width: 576px) {
+      padding: 0rem 1rem;
     }
   }
 `;
@@ -161,7 +161,7 @@ const ABoutSectionRight = styled.div`
   grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr);
   grid-template-rows: 1fr 1fr;
   grid-gap: 10px;
-  padding: 0rem 7rem;
+  padding: 0rem 8rem;
   margin-top: 0rem;
 
   @media (max-width: 1138px) {
@@ -173,6 +173,5 @@ const ABoutSectionRight = styled.div`
     grid-template-rows: max-content;
 
     padding: 0rem 1rem;
-
   }
 `;
