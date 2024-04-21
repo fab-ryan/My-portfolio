@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { Button, DashboardLayouts, Text } from '@/components';
 import styled from 'styled-components';
 
+
 export const metadata: Metadata = {
   title: 'Error',
 };

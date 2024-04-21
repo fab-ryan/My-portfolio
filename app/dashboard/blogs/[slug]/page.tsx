@@ -8,8 +8,8 @@ import {
   Upload,
   Image,
   LoadingIcon,
-} from '../../../components';
-import InputText from '../../../components/InputText';
+} from '@/components';
+import InputText from '@/components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { useEffect, useState, useRef, Suspense } from 'react';

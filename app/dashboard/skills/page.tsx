@@ -1,9 +1,9 @@
 'use client';
-import { Button, DashboardLayouts, LoadingIcon, Table } from '../../components';
+import { Button, DashboardLayouts, LoadingIcon, Table } from '@/components';
 import styled from 'styled-components';
-import { Text } from '../../components';
-import { DeleteModal } from '../../components/DeleteModal';
-import InputText from '../../components/InputText';
+import { Text } from '@/components';
+import { DeleteModal } from '@/components/DeleteModal';
+import InputText from '@/components/InputText';
 import { Formik, Form, Field, FormikProps } from 'formik';
 import { useRouter } from 'next/navigation';
 import {

@@ -18,7 +18,7 @@ const BlogSections = () => {
 
   
   return (
-    <BlogSection>
+    <BlogSection id='blog'>
       <BlogHeader>
         <div className='header-title'>
           <Text

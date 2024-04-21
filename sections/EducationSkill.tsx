@@ -11,7 +11,7 @@ const EducationSkill = () => {
   const { data, loading } = useSelector((state) => state.skills);
 
   return (
-    <MoreAboutSection>
+    <MoreAboutSection id='education' >
       <AboutTitle>
         <div className='title'>
           <Text transformed='capitalize'>More</Text>

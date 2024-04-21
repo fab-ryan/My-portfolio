@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, DashboardLayouts, Text, Editor, Upload, LoadingIcon } from '../../../components';
-import InputText from '../../../components/InputText';
+import { Button, DashboardLayouts, Text, Editor, Upload, LoadingIcon } from '@/components';
+import InputText from '@/components/InputText';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import { Suspense, useEffect, useState } from 'react';
@@ -25,6 +25,7 @@ export default function CreateBlog() {
     if(loadingResponse.isSuccess){
      router.push('/dashboard/blogs')
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[loadingResponse.isSuccess])
   return (
       <Container>

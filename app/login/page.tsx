@@ -1,10 +1,10 @@
 'use client';
 
 import styled from 'styled-components';
-import { Button } from '../components';
+import { Button } from '@/components';
 import * as Yup from 'yup';
 import { Form, ErrorMessage, Formik, Field } from 'formik';
-import InputText from '../components/InputText';
+import InputText from '@/components/InputText';
 import { themes } from '@/utils/theme';
 import { useLoginMutation } from '@/redux';
 import { useSelector } from '@/hooks/useActions';

@@ -1,19 +1,19 @@
 'use client';
 import styled from 'styled-components';
-import { NavBar, BottomNavBar, Text, BlogCard } from './components/index';
+import { NavBar, BottomNavBar, Text, BlogCard } from '@/components/index';
 import HomeSection from '@/sections/Home';
 import AboutSection from '@/sections/About';
 import EducationSkill from '@/sections/EducationSkill';
-import { themes } from './utils/theme';
-import PortfolioSection from './sections/Portfolio';
-import BlogSections from './sections/BlogSection';
-import ContactForm from './sections/ContactForm';
+import { themes } from '../utils/theme';
+import PortfolioSection from '../sections/Portfolio';
+import BlogSections from '../sections/BlogSection';
+import ContactForm from '../sections/ContactForm';
 import { BsTelephoneFill } from 'react-icons/bs';
 import { MdEmail } from 'react-icons/md';
 import { FaMapMarker } from 'react-icons/fa';
-import FooterSection from './sections/FooterSection';
+import FooterSection from '../sections/FooterSection';
 import { Suspense } from 'react';
-import { LoadingIcon } from './components/index';
+import { LoadingIcon } from '../components/index';
 
 export default function Page() {
   return (
